@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+ 	<link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="app-preview">
+            <img src="https://www.instagram.com/static/images/homepage/screenshots/screenshot1.png/fdfe239b7c9f.png" alt="Instagram app preview" width="380" height="581">
+        </div>
+        <div class="login-container">
+            <div class="form-container">
+                <img src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png" alt="Instagram" class="logo" width="175" height="51">
+                <form id="loginForm">
+                    <input type="text" placeholder="전화번호, 사용자 이름 또는 이메일" required>
+                    <input type="password" placeholder="비밀번호" required>
+                    <button type="submit">로그인</button>
+                </form>
+                <div id="errorMessage" class="error-message" style="display: none;">
+                    잘못된 비밀번호입니다. 다시 확인하세요.
+                </div>
+                <div class="divider">또는</div>
+                <div class="facebook-login">
+                    <a href="#">Facebook으로 로그인</a>
+                </div>
+                <div class="forgot-password">
+                    <a href="#">비밀번호를 잊으셨나요?</a>
+                </div>
+            </div>
+            <div class="signup">
+                <p>계정이 없으신가요? <a href="#">가입하기</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('errorMessage').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

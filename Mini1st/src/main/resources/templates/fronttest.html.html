@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Clone</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            border-right: 1px solid #dbdbdb;
+            padding: 20px;
+            z-index: 10;
+            background-color: white;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .sidebar-item i {
+            margin-right: 10px;
+        }
+        .content {
+            flex-grow: 1;
+            position: relative;
+        }
+        .content-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            overflow-y: auto;
+        }
+        .content-section.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .notification-item, .search-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .notification-item img, .search-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-item" onclick="showContent('home')">
+            <i class="fas fa-home"></i> 홈
+        </div>
+        <div class="sidebar-item" onclick="showContent('search')">
+            <i class="fas fa-search"></i> 검색
+        </div>
+        <div class="sidebar-item" onclick="showContent('notifications')">
+            <i class="fas fa-heart"></i> 알림
+        </div>
+        <!-- 다른 메뉴 아이템들 -->
+    </div>
+    <div class="content">
+        <div id="home" class="content-section active">
+            <h2>홈</h2>
+            <p>여기에 홈 콘텐츠가 표시됩니다.</p>
+        </div>
+        <div id="search" class="content-section">
+            <h2>검색</h2>
+            <input type="text" class="search-bar" placeholder="검색...">
+            <div class="search-item">
+                <img src="/placeholder.svg?height=40&width=40" alt="User">
+                <span>사용자1</span>
+            </div>
+            <div class="search-item">
+                <img src="/placeholder.svg?height=40&width=40" alt="User">
+                <span>사용자2</span>
+            </div>
+        </div>
+        <div id="notifications" class="content-section">
+            <h2>알림</h2>
+            <div class="notification-item">
+                <img src="/placeholder.svg?height=40&width=40" alt="User">
+                <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
+            </div>
+            <div class="notification-item">
+                <img src="/placeholder.svg?height=40&width=40" alt="User">
+                <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showContent(contentId) {
+            const contents = document.querySelectorAll('.content-section');
+            const targetContent = document.getElementById(contentId);
+
+            if (targetContent.classList.contains('active')) {
+                targetContent.classList.remove('active');
+                setTimeout(() => {
+                    document.getElementById('home').classList.add('active');
+                }, 300);
+            } else {
+                contents.forEach(content => content.classList.remove('active'));
+                setTimeout(() => {
+                    targetContent.classList.add('active');
+                }, 10);
+            }
+        }
+    </script>
+</body>
+</html>

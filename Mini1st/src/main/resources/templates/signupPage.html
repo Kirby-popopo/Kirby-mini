@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram 회원가입</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">Instagram</div>
+        <div class="subtitle">친구들의 사진과 동영상을 보려면 가입하세요.</div>
+        <form id="signupForm">
+            <input type="email" id="email" placeholder="휴대폰 번호 또는 이메일 주소" required>
+            <div id="emailError" class="error"></div>
+            <input type="text" id="fullName" placeholder="성명" required>
+            <input type="text" id="username" placeholder="사용자 이름" required>
+            <div id="usernameError" class="error"></div>
+            <div id="usernameSuggestions" class="username-suggestions"></div>
+            <div class="password-container">
+                <input type="password" id="password" placeholder="비밀번호" required>
+                <button type="button" id="passwordToggle" class="password-toggle">표시</button>
+            </div>
+            <div id="passwordError" class="error"></div>
+            <button type="submit">가입</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('signupForm');
+        const email = document.getElementById('email');
+        const username = document.getElementById('username');
+        const password = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const emailError = document.getElementById('emailError');
+        const usernameError = document.getElementById('usernameError');
+        const passwordError = document.getElementById('passwordError');
+        const usernameSuggestions = document.getElementById('usernameSuggestions');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            validateForm();
+        });
+
+        email.addEventListener('blur', validateEmail);
+        username.addEventListener('input', validateUsername);
+        username.addEventListener('blur', checkUsername);
+        password.addEventListener('input', validatePassword);
+
+        passwordToggle.addEventListener('click', function() {
+            if (password.type === 'password') {
+                password.type = 'text';
+                passwordToggle.textContent = '숨기기';
+            } else {
+                password.type = 'password';
+                passwordToggle.textContent = '표시';
+            }
+        });
+
+        function validateForm() {
+            validateEmail();
+            validateUsername();
+            checkUsername();
+            validatePassword();
+        }
+
+        function validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                emailError.textContent = '유효한 이메일 주소를 입력하세요.';
+            } else {
+                emailError.textContent = '';
+            }
+        }
+
+        function validateUsername() {
+            const usernameRegex = /^[a-zA-Z0-9]+$/;
+            if (!usernameRegex.test(username.value)) {
+                usernameError.textContent = '사용자 이름은 문자와 숫자만 포함할 수 있습니다.';
+            } else {
+                usernameError.textContent = '';
+            }
+        }
+
+        function checkUsername() {
+            // 실제로는 서버에 요청을 보내 중복 확인을 해야 합니다.
+            // 여기서는 간단한 시뮬레이션만 합니다.
+            if (username.value === 'admin' || username.value === 'instagram') {
+                usernameError.textContent = '이 사용자 이름은 이미 사용 중입니다.';
+                suggestUsernames(username.value);
+            } else {
+                usernameSuggestions.textContent = '';
+            }
+        }
+
+        function suggestUsernames(base) {
+            const suggestions = [
+                base + Math.floor(Math.random() * 1000),
+                base + Math.floor(Math.random() * 1000),
+            ];
+            usernameSuggestions.textContent = '추천 사용자 이름: ' + suggestions.join(', ');
+        }
+
+        function validatePassword() {
+            if (password.value.length < 6) {
+                passwordError.textContent = '비밀번호는 6자 이상이어야 합니다.';
+            } else {
+                passwordError.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>
