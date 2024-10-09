@@ -1,5 +1,5 @@
 # Kirby-mini
-[KOSA] 미니 프로젝트 4조 - TeamKirby repository
+[KOSA] 미니 프로젝트 5조 - TeamKirby repository
 <br>
 팀장 - 문태성
 <br>
