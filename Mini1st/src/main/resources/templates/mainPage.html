@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인스타그램 메시지</title>
+    <title>Instagram Clone - Dark Mode</title>
     <style>
         /* 여기에 공통 CSS 스타일을 붙여넣기 */
         body {
@@ -56,213 +56,107 @@
     padding: 20px;
     width: calc(100% - 220px);
 }
-        /* 기존 스타일 중 sidebar 관련 스타일은 제거하고 공통 스타일로 대체 */
-        .container {
-            display: flex;
-            height: 100vh;
+        /* 기존의 다른 스타일들은 그대로 유지 */
+        .post {
+            background-color: #1e1e1e;
+            border: 1px solid #2c2c2c;
+            border-radius: 3px;
+            margin-bottom: 60px;
         }
-        .message-sidebar {
-            width: 350px;
-            border-right: 1px solid #262626;
-            overflow-y: auto;
+        .post-header {
             display: flex;
-            flex-direction: column;
-        }
-        .header {
-            padding: 20px;
-            border-bottom: 1px solid #262626;
-        }
-        .message-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
+            padding: 16px;
         }
-        .message-title {
-            font-size: 16px;
-            margin: 0;
-        }
-        .message-count {
-            background-color: #0095f6;
-            color: white;
+        .post-header img {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 12px;
+            margin-right: 10px;
         }
-        .message-list {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-        .message-item {
-            padding: 15px;
-            border-bottom: 1px solid #262626;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .message-item:hover, .message-item:focus {
-            background-color: #121212;
-            outline: none;
-        }
-        .avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-        .message-content {
-            flex-grow: 1;
-        }
-        .username {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .last-message {
-            color: #8e8e8e;
-            font-size: 14px;
-        }
-        .chat-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            color: #8e8e8e;
-        }
-        .new-message-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #0095f6;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
+        .post-header .username {
             font-weight: 600;
-            transition: background-color 0.3s;
         }
-        .new-message-btn:hover, .new-message-btn:focus {
-            background-color: #0074cc;
-            outline: none;
-        }
-        #chat-frame {
-            display: none;
+        .post-image img {
             width: 100%;
-            height: 100%;
+            height: auto;
+        }
+        .post-actions {
+            padding: 4px 16px;
+        }
+        .post-actions button {
+            background: none;
             border: none;
+            cursor: pointer;
+            font-size: 24px;
+            margin-right: 16px;
+            color: #fff;
+        }
+        .post-likes {
+            padding: 0 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .post-content, .post-comments {
+            padding: 0 16px;
+        }
+        .post-content .username, .post-comments .username {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        .post-content .more, .post-comments .more {
+            color: #a8a8a8;
+            cursor: pointer;
+        }
+        .comment-input {
+            border-top: 1px solid #2c2c2c;
+            padding: 16px;
+        }
+        .comment-input input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            background-color: #1e1e1e;
+            color: #fff;
         }
         .modal {
             display: none;
             position: fixed;
-            z-index: 1001;
+            z-index: 1;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
         }
         .modal-content {
             background-color: #262626;
-            width: 100%;
-            max-width: 400px;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            border-bottom: 1px solid #363636;
-        }
-        .modal-title {
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 600;
-            margin: 0;
-            flex-grow: 1;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #363636;
+            width: 300px;
             text-align: center;
         }
-        .close-btn {
-            background: none;
-            border: none;
-            color: #a8a8a8;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
+        .modal-content h2 {
+            margin-top: 0;
         }
-        .modal-body {
-            padding: 16px;
-            min-height: 150px;
+        .modal-content img {
+            width: 50px;
+            height: 50px;
+            margin: 20px 0;
         }
-        .input-group {
-            margin-bottom: 16px;
-            position: relative;
+        .modal-content p {
+            margin-bottom: 20px;
         }
-        .input-field {
-            width: 100%;
-            padding: 12px 16px;
-            background-color: #262626;
-            border: 1px solid #363636;
-            border-radius: 4px;
-            color: #ffffff;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        .input-label {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8e8e8e;
-            font-size: 14px;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
-        .input-field:focus + .input-label,
-        .input-field:not(:placeholder-shown) + .input-label {
-            top: 0;
-            font-size: 10px;
-            background-color: #262626;
-            padding: 0 4px;
-            color: #0095f6;
-        }
-        .search-result {
-            color: #a8a8a8;
-            font-size: 14px;
-            margin-top: 8px;
-            padding: 0 16px;
-        }
-        .modal-footer {
-            padding: 16px;
-            border-top: 1px solid #363636;
-        }
-        .chat-btn {
-            width: 100%;
-            padding: 8px;
+        .modal-content button {
             background-color: #0095f6;
             color: white;
+            padding: 10px 20px;
             border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .chat-btn:hover, .chat-btn:focus {
-            background-color: #0074cc;
-            outline: none;
-        }
-        .chat-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
         }
     </style>
 </head>
@@ -308,147 +202,88 @@
     </div>
 
     <div class="main-content">
-        <div class="container">
-            <div class="message-sidebar">
-                <div class="header">
-                    <div class="message-header">
-                        <h2 class="message-title">메시지</h2>
-                        <span class="message-count">4</span>
-                    </div>
-                </div>
-                <ul class="message-list">
-                    <li class="message-item" data-username="서태웅" tabindex="0">
-                        <img src="../img/서태웅.png" alt="서태웅의 프로필 사진" class="avatar">
-                        <div class="message-content">
-                            <div class="username">서태웅</div>
-                            <div class="last-message">안녕하세요! 오늘 어떠세요?</div>
-                        </div>
-                        <span class="unread-count">2</span>
-                    </li>
-                    <li class="message-item" data-username="안선생님" tabindex="0">
-                        <img src="../img/안선생님.png" alt="안선생님의 프로필 사진" class="avatar">
-                        <div class="message-content">
-                            <div class="username">안선생님</div>
-                            <div class="last-message">사진 잘 받았어요. 감사합니다!</div>
-                        </div>
-                        <span class="unread-count">1</span>
-                    </li>
-                    <li class="message-item" data-username="정대만" tabindex="0">
-                        <img src="../img/정대만.png" alt="정대만의 프로필 사진" class="avatar">
-                        <div class="message-content">
-                            <div class="username">정대만</div>
-                            <div class="last-message">불꽃남자 정대만</div>
-                        </div>
-                        <span class="unread-count">1</span>
-                    </li>
-                </ul>
+        <div class="post">
+            <div class="post-header">
+                <img src="https://media.istockphoto.com/id/466167557/ko/%EC%82%AC%EC%A7%84/%EC%8B%A0%EC%83%9D%EC%95%84-chick.jpg?s=612x612&w=0&k=20&c=94vZS_L2t47Yb1DtHTYv1VBjVP6Ecu_SgmH79aCfEfE=" alt="병아리 프로필">
+                <span class="username">병아리</span>
             </div>
-            <div class="chat-area">
-                <div id="default-content" class="chat-area">
-                    <p>메시지를 선택하거나 새로운 메시지를 보내세요</p>
-                    <button class="new-message-btn" id="newMessageBtn">새 메시지</button>
+            <div class="post-image">
+                <img src="https://img.freepik.com/premium-photo/fried-rice-with-fried-egg-delicious-food-photography-illustration-created-with-generative-ai_115122-6028.jpg" alt="계란프라이">
+            </div>
+            <div class="post-actions">
+                <button>❤️</button>
+                <button>💬</button>
+                <button>🔖</button>
+            </div>
+            <div class="post-likes">
+                뱀님 외 2명이 좋아합니다
+            </div>
+            <div class="post-content">
+                <span class="username">병아리</span>
+                <span class="content">2024-10-02</span>
+                <span class="content" id="full-content" style="display: none;">갓생살자<br>#아침 #맛있다</span>
+                <span class="more" id="show-more" onclick="toggleContent()">더 보기</span>
+            </div>
+            <div class="post-comments">
+                <p>댓글 2개</p>
+                <div id="comments" style="display: none;">
+                    <p><span class="username">뱀</span> 맛있겠다 :)</p>
+                    <p><span class="username">사자</span> @호랑이 갓생 가보자고</p>
                 </div>
-                <iframe id="chat-frame" src="messageChat.html" frameborder="0" title="채팅 창"></iframe>
+                <span class="more" id="show-comments" onclick="toggleComments()">댓글 모두 보기</span>
+            </div>
+            <div class="comment-input">
+                <input type="text" placeholder="댓글 달기...">
             </div>
         </div>
     </div>
 
-    <div id="newMessageModal" class="modal" aria-labelledby="modalTitle" aria-modal="true" role="dialog">
+    <div id="createPostModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <button class="close-btn" aria-label="닫기">&times;</button>
-                <h2 id="modalTitle" class="modal-title">새로운 메시지</h2>
-                <div style="width: 24px;"></div>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <input type="text" id="recipient" class="input-field" placeholder=" " aria-label="받는 사람">
-                    <label for="recipient" class="input-label">받는 사람:</label>
-                </div>
-                <p id="searchResult" class="search-result" aria-live="polite"></p>
-            </div>
-            <div class="modal-footer">
-                <button id="chatBtn" class="chat-btn" disabled>채팅</button>
-            </div>
+            <h2>새 게시물 만들기</h2>
+            <img src="https://img.icons8.com/ios/50/ffffff/image-and-video.png" alt="이미지와 비디오 아이콘">
+            <p>사진과 동영상을 여기에 끌어다 놓으세요</p>
+            <button>컴퓨터에서 선택</button>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const messageItems = document.querySelectorAll('.message-item');
-            const defaultContent = document.getElementById('default-content');
-            const chatFrame = document.getElementById('chat-frame');
-            const newMessageBtn = document.getElementById('newMessageBtn');
-            const modal = document.getElementById('newMessageModal');
-            const closeBtn = document.querySelector('.close-btn');
-            const chatBtn = document.getElementById('chatBtn');
-            const recipientInput = document.getElementById('recipient');
-            const searchResult = document.getElementById('searchResult');
-
-            messageItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const username = this.getAttribute('data-username');
-                    loadChat(username);
-                });
-                item.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        const username = this.getAttribute('data-username');
-                        loadChat(username);
-                    }
-                });
-            });
-
-            function loadChat(username) {
-                defaultContent.style.display = 'none';
-                chatFrame.style.display = 'block';
-                chatFrame.src = `messageChat.html?username=${encodeURIComponent(username)}`;
+        function toggleContent() {
+            var fullContent = document.getElementById("full-content");
+            var showMore = document.getElementById("show-more");
+            if (fullContent.style.display === "none") {
+                fullContent.style.display = "inline";
+                showMore.textContent = "숨기기";
+            } else {
+                fullContent.style.display = "none";
+                showMore.textContent = "더 보기";
             }
+        }
 
-            newMessageBtn.addEventListener('click', function() {
-                modal.style.display = 'flex';
-                recipientInput.focus();
-            });
-
-            closeBtn.addEventListener('click', closeModal);
-
-            window.addEventListener('click', function(event) {
-                if (event.target == modal) {
-                    closeModal();
-                }
-            });
-
-            function closeModal() {
-                modal.style.display = 'none';
-                recipientInput.value = '';
-                searchResult.textContent = '';
-                chatBtn.disabled = true;
+        function toggleComments() {
+            var comments = document.getElementById("comments");
+            var showComments = document.getElementById("show-comments");
+            if (comments.style.display === "none") {
+                comments.style.display = "block";
+                showComments.textContent = "댓글 숨기기";
+            } else {
+                comments.style.display = "none";
+                showComments.textContent = "댓글 모두 보기";
             }
+        }
 
-            recipientInput.addEventListener('input', function() {
-                const query = this.value.trim();
-                if (query.length > 0) {
-                    searchResult.textContent = '계정을 찾을 수 없습니다.';
-                    chatBtn.disabled = true;
-                } else {
-                    searchResult.textContent = '';
-                    chatBtn.disabled = true;
-                }
-            });
+        var createPostButton = document.getElementById("createPost");
+        var modal = document.getElementById("createPostModal");
 
-            chatBtn.addEventListener('click', function() {
-                const recipient = recipientInput.value.trim();
-                if (recipient) {
-                    loadChat(recipient);
-                    closeModal();
-                }
-            });
+        createPostButton.onclick = function() {
+            modal.style.display = "block";
+        }
 
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modal.style.display === 'flex') {
-                    closeModal();
-                }
-            });
-        });
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
     </script>
 </body>
 </html>
