@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagram Clone - Dark Mode</title>
     <!-- 사이드바 css -->
-    <link rel="stylesheet" href="/static/sidebar/sidebar.css">
+    <link rel="stylesheet" href="/sidebar/sidebar.css">
     <!-- 메뉴 css -->
-    <link rel="stylesheet" href="/static/sidebar/menu.css">
+    <link rel="stylesheet" href="/sidebar/menu.css">
     <!-- 공통 베이스 css -->
-    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/base.css">
 
     <!-- mainPage css -->
-    <link rel="stylesheet" href="/static/mainPage/mainPage.css">
+    <link rel="stylesheet" href="/mainPage/mainPage.css">
 
 </head>
 <body>
@@ -20,7 +20,7 @@
     <div id="sidebar-container"></div>
 
     <script>
-        fetch('/static/sidebar/sidebar.html')
+        fetch('/sidebar/sidebar.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('sidebar-container').innerHTML = data;
