@@ -4,202 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagram Clone - Dark Mode</title>
-    <style>
-        /* 여기에 공통 CSS 스타일을 붙여넣기 */
-        body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #121212;
-    color: #fff;
-    display: flex;
-}
+    <!-- 사이드바 css -->
+    <link rel="stylesheet" href="/static/sidebar/sidebar.css">
+    <!-- 메뉴 css -->
+    <link rel="stylesheet" href="/static/sidebar/menu.css">
+    <!-- 공통 베이스 css -->
+    <link rel="stylesheet" href="/static/base.css">
 
-.sidebar {
-    width: 220px;
-    background-color: #000;
-    color: #fff;
-    height: 100vh;
-    padding: 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    overflow-y: auto;
-}
+    <!-- mainPage css -->
+    <link rel="stylesheet" href="/static/mainPage/mainPage.css">
 
-.sidebar-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 10px;
-    transition: background-color 0.3s;
-}
-
-.sidebar-item:hover {
-    background-color: #1e1e1e;
-}
-
-.sidebar-item img {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-}
-
-.sidebar-text {
-    font-size: 14px;
-}
-
-.main-content {
-    margin-left: 220px;
-    padding: 20px;
-    width: calc(100% - 220px);
-}
-        /* 기존의 다른 스타일들은 그대로 유지 */
-        .post {
-            background-color: #1e1e1e;
-            border: 1px solid #2c2c2c;
-            border-radius: 3px;
-            margin-bottom: 60px;
-        }
-        .post-header {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-        }
-        .post-header img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .post-header .username {
-            font-weight: 600;
-        }
-        .post-image img {
-            width: 100%;
-            height: auto;
-        }
-        .post-actions {
-            padding: 4px 16px;
-        }
-        .post-actions button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 24px;
-            margin-right: 16px;
-            color: #fff;
-        }
-        .post-likes {
-            padding: 0 16px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        .post-content, .post-comments {
-            padding: 0 16px;
-        }
-        .post-content .username, .post-comments .username {
-            font-weight: 600;
-            margin-right: 5px;
-        }
-        .post-content .more, .post-comments .more {
-            color: #a8a8a8;
-            cursor: pointer;
-        }
-        .comment-input {
-            border-top: 1px solid #2c2c2c;
-            padding: 16px;
-        }
-        .comment-input input {
-            width: 100%;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            background-color: #1e1e1e;
-            color: #fff;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #262626;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #363636;
-            width: 300px;
-            text-align: center;
-        }
-        .modal-content h2 {
-            margin-top: 0;
-        }
-        .modal-content img {
-            width: 50px;
-            height: 50px;
-            margin: 20px 0;
-        }
-        .modal-content p {
-            margin-bottom: 20px;
-        }
-        .modal-content button {
-            background-color: #0095f6;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
-    <!-- 여기에 공통 HTML 구조의 sidebar를 붙여넣기 -->
-    <div class="sidebar">
-        <div class="sidebar-item">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/instagram-new.png" alt="Instagram">
-            <span class="sidebar-text">Instagram</span>
-        </div>
-        <div class="sidebar-item">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/home--v2.png" alt="홈">
-            <span class="sidebar-text">홈</span>
-        </div>
-        <div class="sidebar-item">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/search.png" alt="검색">
-            <span class="sidebar-text">검색</span>
-        </div>
-        <div class="sidebar-item">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/compass.png" alt="탐색 탭">
-            <span class="sidebar-text">탐색 탭</span>
-        </div>
-        <div class="sidebar-item">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/instagram-reel.png" alt="릴스">
-            <span class="sidebar-text">릴스</span>
-        </div>
-        <div class="sidebar-item">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/facebook-messenger.png" alt="메시지">
-            <span class="sidebar-text">메시지</span>
-        </div>
-        <div class="sidebar-item">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/like.png" alt="알림">
-            <span class="sidebar-text">알림</span>
-        </div>
-        <div class="sidebar-item" id="createPost">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/plus-math.png" alt="만들기">
-            <span class="sidebar-text">만들기</span>
-        </div>
-        <div class="sidebar-item">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/user-male-circle.png" alt="프로필">
-            <span class="sidebar-text">프로필</span>
-        </div>
-    </div>
+    <!-- sidebar html 불러오기 -->
+    <div id="sidebar-container"></div>
+
+    <script>
+        fetch('/static/sidebar/sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+    <!-- sidebar html 불러오기 끝 -->
 
     <div class="main-content">
         <div class="post">
@@ -247,43 +75,92 @@
         </div>
     </div>
 
+    <!-- 검색, 알림 기능 사이드바 -->
+    <div class="menu">
+        <div id="search" class="menu-section">
+            <h2>검색</h2>
+            <input type="text" class="search-bar" placeholder="검색...">
+            <div class="search-item">
+                <img src="/placeholder.svg?height=30&width=30" alt="User">
+                <span>사용자1</span>
+            </div>
+            <div class="search-item">
+                <img src="/placeholder.svg?height=30&width=30" alt="User">
+                <span>사용자2</span>
+            </div>
+        </div>
+
+        <div id="notifications" class="menu-section">
+            <h2>알림</h2>
+            <div class="notification-item">
+                <img src="/placeholder.svg?height=30&width=30" alt="User">
+                <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
+            </div>
+            <div class="notification-item">
+                <img src="/placeholder.svg?height=30&width=30" alt="User">
+                <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
+            </div>
+        </div>
+    </div>
+    <!-- 검색, 알림 기능 사이드바 끝-->
+
     <script>
-        function toggleContent() {
-            var fullContent = document.getElementById("full-content");
-            var showMore = document.getElementById("show-more");
-            if (fullContent.style.display === "none") {
-                fullContent.style.display = "inline";
-                showMore.textContent = "숨기기";
-            } else {
-                fullContent.style.display = "none";
-                showMore.textContent = "더 보기";
-            }
-        }
+        <!-- 알림, 검색 관련 JS -->
+        function showContent(contentId) {
+           const contents = document.querySelectorAll('.menu-section');
+           const targetContent = document.getElementById(contentId);
 
-        function toggleComments() {
-            var comments = document.getElementById("comments");
-            var showComments = document.getElementById("show-comments");
-            if (comments.style.display === "none") {
-                comments.style.display = "block";
-                showComments.textContent = "댓글 숨기기";
-            } else {
-                comments.style.display = "none";
-                showComments.textContent = "댓글 모두 보기";
-            }
-        }
+           if (targetContent.classList.contains('active')) {
+               targetContent.classList.remove('active');
+               setTimeout(() => {
+                   document.getElementById('home').classList.add('active');
+               }, 300);
+           } else {
+               contents.forEach(content => content.classList.remove('active'));
+               setTimeout(() => {
+                   targetContent.classList.add('active');
+               }, 10);
+           }
+       }
 
-        var createPostButton = document.getElementById("createPost");
-        var modal = document.getElementById("createPostModal");
+        <!-- 게시글 컨텐츠 토글관련 -->
+       function toggleContent() {
+           var fullContent = document.getElementById("full-content");
+           var showMore = document.getElementById("show-more");
+           if (fullContent.style.display === "none") {
+               fullContent.style.display = "inline";
+               showMore.textContent = "숨기기";
+           } else {
+               fullContent.style.display = "none";
+               showMore.textContent = "더 보기";
+           }
+       }
 
-        createPostButton.onclick = function() {
-            modal.style.display = "block";
-        }
+       function toggleComments() {
+           var comments = document.getElementById("comments");
+           var showComments = document.getElementById("show-comments");
+           if (comments.style.display === "none") {
+               comments.style.display = "block";
+               showComments.textContent = "댓글 숨기기";
+           } else {
+               comments.style.display = "none";
+               showComments.textContent = "댓글 모두 보기";
+           }
+       }
 
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+       var createPostButton = document.getElementById("createPost");
+       var modal = document.getElementById("createPostModal");
+
+       createPostButton.onclick = function() {
+           modal.style.display = "block";
+       }
+
+       window.onclick = function(event) {
+           if (event.target == modal) {
+               modal.style.display = "none";
+           }
+       }
+
     </script>
 </body>
 </html>
