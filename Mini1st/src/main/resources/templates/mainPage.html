@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -122,6 +122,19 @@
                }, 10);
            }
        }
+
+       <!-- 메뉴 영역 외부 클릭 감지 후 active 클래스 제거 -->
+       document.addEventListener('click', function(event) {
+          const menu = document.querySelector('.menu');
+          const isClickInsideMenu = menu.contains(event.target);
+
+       if (!isClickInsideMenu) {
+           const activeSection = document.querySelector('.menu-section.active');
+               if (activeSection) {
+                  activeSection.classList.remove('active');
+               }
+           }
+       });
 
         <!-- 게시글 컨텐츠 토글관련 -->
        function toggleContent() {
