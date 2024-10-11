@@ -10,13 +10,13 @@ public class testController {
 
     @GetMapping("/")
     public String test() {
-        return "message/mainPage";
+        return "mainPage";
     }
 
     @GetMapping("/chat")
     public String showChatPage(@RequestParam String username, Model model) {
         model.addAttribute("username", username);
-        return "message/messageChat";  // resources/templates/message/messageChat.html
+        return "messageChat";  // resources/templates/message/messageChat.html
     }
 
 }
