@@ -107,6 +107,8 @@
             })
             .catch(error => console.error('Error loading menu:', error));
     </script>
+
+    <script src="/sidebar/menu.js" type="text/javascript"></script>
     <!-- 검색, 알림 기능 사이드바 끝-->
 
     <script>
@@ -185,24 +187,6 @@
                 }
             });
         });
-
-        <!-- 알림, 검색 관련 JS -->
-        function showContent(contentId) {
-           const contents = document.querySelectorAll('.menu-section');
-           const targetContent = document.getElementById(contentId);
-
-           if (targetContent.classList.contains('active')) {
-               targetContent.classList.remove('active');
-               setTimeout(() => {
-                   document.getElementById('home').classList.add('active');
-               }, 300);
-           } else {
-               contents.forEach(content => content.classList.remove('active'));
-               setTimeout(() => {
-                   targetContent.classList.add('active');
-               }, 10);
-           }
-       }
 
     </script>
 </body>
