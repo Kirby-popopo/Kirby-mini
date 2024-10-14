@@ -76,32 +76,16 @@
     </div>
 
     <!-- 검색, 알림 기능 사이드바 -->
-    <div class="menu">
-        <div id="search" class="menu-section">
-            <h2>검색</h2>
-            <input type="text" class="search-bar" placeholder="검색...">
-            <div class="search-item">
-                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                <span>사용자1</span>
-            </div>
-            <div class="search-item">
-                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                <span>사용자2</span>
-            </div>
-        </div>
+    <div id="menu-container"></div>
 
-        <div id="notifications" class="menu-section">
-            <h2>알림</h2>
-            <div class="notification-item">
-                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
-            </div>
-            <div class="notification-item">
-                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
-            </div>
-        </div>
-    </div>
+    <script>
+        fetch('/sidebar/menu.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading menu:', error));
+    </script>
     <!-- 검색, 알림 기능 사이드바 끝-->
 
     <script>
