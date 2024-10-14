@@ -16,6 +16,32 @@
            }
        }
 
+      <!-- searchbar change event -->
+        function inputTextInputEvent() {
+       		let xhr = new XMLHttpRequest();
+       		let userId = document.getElementById("inputText").value;
+       		xhr.onload = function() {
+       			if (xhr.status == 200) {
+       			    let search_section = document.querySelector(".search-section");
+                    search_section.innerHTML = "";
+
+                    if (xhr.responseText.length == 0){
+                        return;
+                    }
+
+       			    let users = JSON.parse(xhr.responseText);
+
+                    search_section.innerHTML = "";
+                        users.forEach(user => {
+                            search_section.innerHTML += `<div class="search-item"><img src="/placeholder.svg?height=30&width=30" alt="User"><span>${user.name}</span></div>`;
+                        });
+       			    }
+       		};
+       		xhr.open('POST', '/SearchUser', true);
+       		xhr.setRequestHeader('Content-Type', 'application/json');
+       		xhr.send(JSON.stringify({ userId: userId }));
+       	}
+
        <!-- 메뉴 영역 외부 클릭 감지 후 active 클래스 제거 -->
        document.addEventListener('click', function(event) {
           const menu = document.querySelector('.menu');
