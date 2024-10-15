@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,211 +15,218 @@
     <!-- messagePage css -->
     <link rel="stylesheet" href="/message/messagePage.css">
 
+    <script>
+        function createRoom() {
+            const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
+            if (roomName && roomName.trim() !== "") {
+                fetch('/roomAdd', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'room_name=' + encodeURIComponent(roomName)
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('채팅방 생성에 실패했습니다.');
+                    }
+                });
+            } else {
+                alert("채팅방 이름은 필수 입력입니다.");
+            }
+        }
+    </script>
 </head>
 <body>
-    <!-- sidebar html 불러오기 -->
-    <div id="sidebar-container"></div>
+<!-- sidebar html 불러오기 -->
+<div id="sidebar-container"></div>
+<script>
+    fetch('/sidebar/sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('sidebar-container').innerHTML = data;
+    })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+<!-- sidebar html 불러오기 끝 -->
 
-    <script>
-        fetch('/sidebar/sidebar.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('sidebar-container').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading sidebar:', error));
-    </script>
-    <!-- sidebar html 불러오기 끝 -->
-
-    <div class="main-content">
-        <div class="container">
-            <div class="message-sidebar">
-                <div class="header">
-                    <div class="message-header">
-                        <h2 class="message-title">메시지</h2>
-                        <span class="message-count">4</span>
-                    </div>
+<div class="main-content">
+    <div class="container">
+        <div class="message-sidebar">
+            <div class="header">
+                <div class="message-header">
+                    <h2 class="message-title">채팅방 리스트</h2>
                 </div>
-                <ul class="message-list">
-                    <li class="message-item" data-username="서태웅" tabindex="0">
-                        <img src="../img/서태웅.png" alt="서태웅의 프로필 사진" class="avatar">
+            </div>
+            <div th:if="${roomList != null}">
+                <ul class="message-list" th:each="room : ${roomList}">
+                    <li class="message-item">
                         <div class="message-content">
-                            <div class="username">서태웅</div>
-                            <div class="last-message">안녕하세요! 오늘 어떠세요?</div>
+                            <div class="username" th:text="${room.room_name}"></div>
                         </div>
-                        <span class="unread-count">2</span>
-                    </li>
-                    <li class="message-item" data-username="안선생님" tabindex="0">
-                        <img src="../img/안선생님.png" alt="안선생님의 프로필 사진" class="avatar">
-                        <div class="message-content">
-                            <div class="username">안선생님</div>
-                            <div class="last-message">사진 잘 받았어요. 감사합니다!</div>
-                        </div>
-                        <span class="unread-count">1</span>
-                    </li>
-                    <li class="message-item" data-username="정대만" tabindex="0">
-                        <img src="../img/정대만.png" alt="정대만의 프로필 사진" class="avatar">
-                        <div class="message-content">
-                            <div class="username">정대만</div>
-                            <div class="last-message">불꽃남자 정대만</div>
-                        </div>
-                        <span class="unread-count">1</span>
                     </li>
                 </ul>
             </div>
-            <div class="chat-area">
-                <div id="default-content" class="chat-area">
-                    <p>메시지를 선택하거나 새로운 메시지를 보내세요</p>
-                    <button class="new-message-btn" id="newMessageBtn">새 메시지</button>
-                </div>
-                <iframe id="chat-frame" src="messageChat.html" frameborder="0" title="채팅 창"></iframe>
+            <div th:if="${roomList == null}">
+                <p>현재 생성된 채팅방이 없습니다.</p>
             </div>
+            <button onclick="createRoom()">채팅방 생성</button>
+        </div>
+        <div class="chat-area">
+            <div id="default-content" class="chat-area">
+                <p>메시지를 선택하거나 새로운 메시지를 보내세요</p>
+                <button class="new-message-btn" id="newMessageBtn">새 메시지</button>
+            </div>
+            <iframe id="chat-frame" src="messageChat.html" frameborder="0" title="채팅 창"></iframe>
+        </div>
+    </div>
+</div>
+
+<div id="newMessageModal" class="modal" aria-labelledby="modalTitle" aria-modal="true" role="dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="close-btn" aria-label="닫기">&times;</button>
+            <h2 id="modalTitle" class="modal-title">새로운 메시지</h2>
+            <div style="width: 24px;"></div>
+        </div>
+        <div class="modal-body">
+            <div class="input-group">
+                <input type="text" id="recipient" class="input-field" placeholder=" " aria-label="받는 사람">
+                <label for="recipient" class="input-label">받는 사람:</label>
+            </div>
+            <p id="searchResult" class="search-result" aria-live="polite"></p>
+        </div>
+        <div class="modal-footer">
+            <button id="chatBtn" class="chat-btn" disabled>채팅</button>
+        </div>
+    </div>
+</div>
+
+<!-- 검색, 알림 기능 사이드바 -->
+<div class="menu">
+    <div id="search" class="menu-section">
+        <h2>검색</h2>
+        <input type="text" class="search-bar" placeholder="검색...">
+        <div class="search-item">
+            <img src="/placeholder.svg?height=30&width=30" alt="User">
+            <span>사용자1</span>
+        </div>
+        <div class="search-item">
+            <img src="/placeholder.svg?height=30&width=30" alt="User">
+            <span>사용자2</span>
         </div>
     </div>
 
-    <div id="newMessageModal" class="modal" aria-labelledby="modalTitle" aria-modal="true" role="dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="close-btn" aria-label="닫기">&times;</button>
-                <h2 id="modalTitle" class="modal-title">새로운 메시지</h2>
-                <div style="width: 24px;"></div>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <input type="text" id="recipient" class="input-field" placeholder=" " aria-label="받는 사람">
-                    <label for="recipient" class="input-label">받는 사람:</label>
-                </div>
-                <p id="searchResult" class="search-result" aria-live="polite"></p>
-            </div>
-            <div class="modal-footer">
-                <button id="chatBtn" class="chat-btn" disabled>채팅</button>
-            </div>
+    <div id="notifications" class="menu-section">
+        <h2>알림</h2>
+        <div class="notification-item">
+            <img src="/placeholder.svg?height=30&width=30" alt="User">
+            <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
+        </div>
+        <div class="notification-item">
+            <img src="/placeholder.svg?height=30&width=30" alt="User">
+            <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
         </div>
     </div>
+</div>
+<!-- 검색, 알림 기능 사이드바 끝-->
 
-    <!-- 검색, 알림 기능 사이드바 -->
-    <div class="menu">
-        <div id="search" class="menu-section">
-            <h2>검색</h2>
-            <input type="text" class="search-bar" placeholder="검색...">
-            <div class="search-item">
-                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                <span>사용자1</span>
-            </div>
-            <div class="search-item">
-                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                <span>사용자2</span>
-            </div>
-        </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageItems = document.querySelectorAll('.message-item');
+        const defaultContent = document.getElementById('default-content');
+        const chatFrame = document.getElementById('chat-frame');
+        const newMessageBtn = document.getElementById('newMessageBtn');
+        const modal = document.getElementById('newMessageModal');
+        const closeBtn = document.querySelector('.close-btn');
+        const chatBtn = document.getElementById('chatBtn');
+        const recipientInput = document.getElementById('recipient');
+        const searchResult = document.getElementById('searchResult');
 
-        <div id="notifications" class="menu-section">
-            <h2>알림</h2>
-            <div class="notification-item">
-                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
-            </div>
-            <div class="notification-item">
-                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
-            </div>
-        </div>
-    </div>
-    <!-- 검색, 알림 기능 사이드바 끝-->
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const messageItems = document.querySelectorAll('.message-item');
-            const defaultContent = document.getElementById('default-content');
-            const chatFrame = document.getElementById('chat-frame');
-            const newMessageBtn = document.getElementById('newMessageBtn');
-            const modal = document.getElementById('newMessageModal');
-            const closeBtn = document.querySelector('.close-btn');
-            const chatBtn = document.getElementById('chatBtn');
-            const recipientInput = document.getElementById('recipient');
-            const searchResult = document.getElementById('searchResult');
-
-            messageItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const username = this.getAttribute('data-username');
+        messageItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const username = this.querySelector('.username').textContent;
+                loadChat(username);
+            });
+            item.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    const username = this.querySelector('.username').textContent;
                     loadChat(username);
-                });
-                item.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        const username = this.getAttribute('data-username');
-                        loadChat(username);
-                    }
-                });
-            });
-
-            function loadChat(username) {
-                defaultContent.style.display = 'none';
-                chatFrame.style.display = 'block';
-                chatFrame.src = `messageChat.html?username=${encodeURIComponent(username)}`;
-            }
-
-            newMessageBtn.addEventListener('click', function() {
-                modal.style.display = 'flex';
-                recipientInput.focus();
-            });
-
-            closeBtn.addEventListener('click', closeModal);
-
-            window.addEventListener('click', function(event) {
-                if (event.target == modal) {
-                    closeModal();
-                }
-            });
-
-            function closeModal() {
-                modal.style.display = 'none';
-                recipientInput.value = '';
-                searchResult.textContent = '';
-                chatBtn.disabled = true;
-            }
-
-            recipientInput.addEventListener('input', function() {
-                const query = this.value.trim();
-                if (query.length > 0) {
-                    searchResult.textContent = '계정을 찾을 수 없습니다.';
-                    chatBtn.disabled = true;
-                } else {
-                    searchResult.textContent = '';
-                    chatBtn.disabled = true;
-                }
-            });
-
-            chatBtn.addEventListener('click', function() {
-                const recipient = recipientInput.value.trim();
-                if (recipient) {
-                    loadChat(recipient);
-                    closeModal();
-                }
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modal.style.display === 'flex') {
-                    closeModal();
                 }
             });
         });
 
-        <!-- 알림, 검색 관련 JS -->
-        function showContent(contentId) {
-           const contents = document.querySelectorAll('.menu-section');
-           const targetContent = document.getElementById(contentId);
+        function loadChat(username) {
+            defaultContent.style.display = 'none';
+            chatFrame.style.display = 'block';
+            chatFrame.src = `messageChat.html?username=${encodeURIComponent(username)}`;
+        }
 
-           if (targetContent.classList.contains('active')) {
-               targetContent.classList.remove('active');
-               setTimeout(() => {
-                   document.getElementById('home').classList.add('active');
-               }, 300);
-           } else {
-               contents.forEach(content => content.classList.remove('active'));
-               setTimeout(() => {
-                   targetContent.classList.add('active');
-               }, 10);
-           }
-       }
+        newMessageBtn.addEventListener('click', function() {
+            modal.style.display = 'flex';
+            recipientInput.focus();
+        });
 
-    </script>
+        closeBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('click', function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        });
+
+        function closeModal() {
+            modal.style.display = 'none';
+            recipientInput.value = '';
+            searchResult.textContent = '';
+            chatBtn.disabled = true;
+        }
+
+        recipientInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length > 0) {
+                searchResult.textContent = '계정을 찾을 수 없습니다.';
+                chatBtn.disabled = true;
+            } else {
+                searchResult.textContent = '';
+                chatBtn.disabled = true;
+            }
+        });
+
+        chatBtn.addEventListener('click', function() {
+            const recipient = recipientInput.value.trim();
+            if (recipient) {
+                loadChat(recipient);
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                closeModal();
+            }
+        });
+    });
+
+    /*알림 검색 관련 JS*/
+    function showContent(contentId) {
+        const contents = document.querySelectorAll('.menu-section');
+        const targetContent = document.getElementById(contentId);
+
+        if (targetContent.classList.contains('active')) {
+            targetContent.classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('home').classList.add('active');
+            }, 300);
+        } else {
+            contents.forEach(content => content.classList.remove('active'));
+            setTimeout(() => {
+                targetContent.classList.add('active');
+            }, 10);
+        }
+    }
+
+</script>
 </body>
 </html>

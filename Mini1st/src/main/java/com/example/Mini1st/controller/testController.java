@@ -15,7 +15,7 @@ public class testController {
 
     @GetMapping("/chat")
     public String showChatPage(@RequestParam String username, Model model) {
-        model.addAttribute("username", username);
+        /*model.addAttribute("username", username);*/
         return "messageChat";  // resources/templates/message/messageChat.html
     }
 

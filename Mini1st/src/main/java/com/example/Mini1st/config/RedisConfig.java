@@ -1,6 +1,8 @@
 package com.example.Mini1st.config;
 
 
+import com.example.Mini1st.domain.ChatRoom;
+import com.example.Mini1st.service.RedisSubscriber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,37 +10,85 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration // config file 인식
+@EnableRedisRepositories
 public class RedisConfig {
 
-    // application.properties에서 값을 가져다 사용하기 위해서
+    // Redis 서버의 호스트 주소를 가져오는 변수
     @Value("${spring.redis.host}")
     private String redisHost;
 
+    // Redis 서버의 포트 번호
     @Value("${spring.redis.port}")
-    private String redisPort;
+    private int redisPort;
 
-    @Value("${spring.redis.password}")
-    private String redisPassword;
+//    // Redis 비밀번호
+//    @Value("${spring.redis.password}")
+//    private String redisPassword;
 
-    @Bean // Bean 등록
-    public RedisConnectionFactory redisConnectionFactory() {
+    // RedisConnectionFactory Bean 생성
+    // Redis 서버와의 연결을 설정하고 관리 하는데 사용.
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisHost);
-        redisStandaloneConfiguration.setPort(Integer.parseInt(redisPort));
-        redisStandaloneConfiguration.setPassword(redisPassword);
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
-        return lettuceConnectionFactory;
+        redisStandaloneConfiguration.setPort(redisPort);
+        // redisStandaloneConfiguration.setPassword(redisPassword); // 비밀번호가 설정되지 않았다면 주석 처리
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
+
+    // ChannelTopic Bean 생성
+    // Redis의 pub/sub 메시징을 위한 채널 토픽을 설정.
     @Bean
-    public RedisTemplate<String, String> redisTemplate() {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-        return redisTemplate;
+    public ChannelTopic channelTopic() {
+        return new ChannelTopic("chatroom");
     }
+
+    // RedisMessageListenerContainer Bean 생성하는 메서드
+    // Redis 메시지를 수신하고 리스너에 전달하는 컨테이너 설정.
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(
+            RedisConnectionFactory connectionFactory,
+            MessageListenerAdapter listenerAdapterChatMessage,
+            ChannelTopic channelTopic) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(listenerAdapterChatMessage, channelTopic);
+        return container;
+    }
+
+    // 실제 메시지를 처리하는 subscriber 설정 추가
+    // RedisSubscriber 클래스를 사용하여 메시지를 처리하는 어댑터를 설정.
+    @Bean
+    public MessageListenerAdapter listenerAdapterChatMessage(RedisSubscriber subscriber) {
+        return new MessageListenerAdapter(subscriber, "onMessage");
+    }
+
+    // RedisTemplate Bean 생성하는 메서드
+    // Redis 데이터를 직렬화 하고 역 직렬화 하는데 사용한다.
+    @Bean
+    public RedisTemplate<String, Object> chatRoomRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        // 키를 위한 직렬화 설정
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+
+        // 값을 위한 직렬화 설정
+        Jackson2JsonRedisSerializer<ChatRoom> serializer = new Jackson2JsonRedisSerializer<>(ChatRoom.class);
+        template.setValueSerializer(serializer);
+        template.setHashValueSerializer(serializer);
+
+        return template;
+    }
+
 }// end class

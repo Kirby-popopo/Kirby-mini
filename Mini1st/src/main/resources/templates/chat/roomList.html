@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>채팅방 리스트</title>
+    <script>
+        function createRoom() {
+            const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
+            if (roomName && roomName.trim() !== "") {
+                fetch('/roomAdd', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'room_name=' + encodeURIComponent(roomName)
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('채팅방 생성에 실패했습니다.');
+                    }
+                });
+            } else {
+                alert("채팅방 이름은 필수 입력입니다.");
+            }
+        }
+
+        function enterRoom(roomId) {
+            window.location.href = '/chatRoom/' + roomId;
+        }
+    </script>
+</head>
+<body>
+<h1>채팅방 리스트</h1>
+
+<div th:if="${roomList != null}">
+    <div th:each="room : ${roomList}">
+        <p th:text="${room.room_name}" th:onclick="'enterRoom(' + ${room.roomId} + ')'" style="cursor: pointer;"></p>
+    </div>
+</div>
+<div th:if="${roomList == null}">
+    <p>현재 생성된 채팅방이 없습니다.</p>
+</div>
+
+<button onclick="createRoom()">채팅방 생성</button>
+
+</body>
+</html>
