@@ -33,7 +33,7 @@
 
                     search_section.innerHTML = "";
                         users.forEach(user => {
-                            search_section.innerHTML += `<div class="search-item"><img src="/placeholder.svg?height=30&width=30" alt="User"><span>${user.name}</span></div>`;
+                            search_section.innerHTML += `<a href="http://localhost:8080/${user.name}"><div class="search-item"><img src="/placeholder.svg?height=30&width=30" alt="User"><span>${user.name}</span></div></a>`;
                         });
        			    }
        		};
