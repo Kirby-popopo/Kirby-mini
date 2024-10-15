@@ -27,14 +27,16 @@
     <div class="login-container">
         <div class="form-container">
             <img src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png" alt="Instagram" class="logo" width="175" height="51">
-            <form id="loginForm" action="/test" method="post">
+            <form id="loginForm" action="/login/authenticate" method="post">
                 <input type="text" name="userid" placeholder="전화번호, 사용자 이름 또는 이메일" required>
                 <input type="password" name="userPw" placeholder="비밀번호" required>
                 <button type="submit">로그인</button>
             </form>
+
             <div id="errorMessage" class="error-message">
                 잘못된 비밀번호입니다. 다시 확인하세요.
             </div>
+
             <div class="divider">또는</div>
             <div class="facebook-login">
                 <a href="#">Facebook으로 로그인</a>
