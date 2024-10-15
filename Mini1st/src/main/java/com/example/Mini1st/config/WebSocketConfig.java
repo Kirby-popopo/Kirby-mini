@@ -23,10 +23,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 간단한 메모리 기반 메시지 브로커를 활성화하고, 해당 브로커의 목적지 접두사를 "/room" 로 설정.
         // 해당 주소를 구독하고 있는 클라이언트 들에게 메시지 전달.
-        registry.enableSimpleBroker("/room");
+        registry.enableSimpleBroker("/topic");  // 메시지를 구독하는 경로 prefix
         // 애플리케이션에서 처리할 메시지의 접두사를 "/room" 으로 설정.
         // 클라이언트에서 보낸 메시지를 받을 prefix
-        registry.setApplicationDestinationPrefixes("/send");
+        registry.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
