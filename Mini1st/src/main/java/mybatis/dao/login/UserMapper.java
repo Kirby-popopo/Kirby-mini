@@ -27,4 +27,9 @@ public interface UserMapper {
     // 사용자 삭제 나중에 바꿔야함
     @Delete("DELETE FROM users WHERE user_id = #{userId}")
     void deleteUser(String userId);
+    // 로그인
+    @Select("SELECT * FROM users WHERE user_id = #{userId} AND user_pw = #{userPw}")
+    UserDTO getUserByIdAndPw(@Param("userId") String userId, @Param("userPw") String userPw);
+
+
 }
