@@ -1,22 +1,25 @@
 package com.example.Mini1st.controller.Login;
 
+import com.example.Mini1st.config.UserDTO;
+import com.example.Mini1st.config.UserAuthenticateDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import mybatis.dao.login.UserMapper;
-import com.example.Mini1st.config.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 
 @Controller
 @RequestMapping("/login")
 public class LoginController {
 
+    // 데이터베이스에 접근하기 위한 UserMapper 객체
     private final UserMapper userMapper;
 
+    // 생성자를 통한 의존성 주입 (UserMapper 객체 주입)
     @Autowired
     public LoginController(UserMapper userMapper) {
         this.userMapper = userMapper;
@@ -30,10 +33,12 @@ public class LoginController {
 
     // 로그인 요청 처리
     @PostMapping("/authenticate")
-    public String authenticate(UserDTO user, HttpServletRequest request, Model model) {
+    public String authenticate(UserAuthenticateDTO user, HttpServletRequest request, Model model) {
+        // 입력한 아이디 비밀번호 확인
         String userId = user.getUserid();
-        String userPw = request.getParameter("userPw");
-        UserDTO foundUser = userMapper.getUserByIdAndPw(userId, userPw);
+        String passwd = user.getUserPw();
+        UserDTO foundUser = userMapper.getUserByIdAndPw(userId, passwd);
+
         if (foundUser != null) {
             HttpSession session = request.getSession(); // 세션 생성
             session.setAttribute("loginMember", foundUser); // 로그인 멤버 정보를 세션에 저장
@@ -68,5 +73,4 @@ public class LoginController {
         model.addAttribute("user", loginMember);
         return "mainPage"; // mainPage.html 뷰 반환
     }
-
 }
