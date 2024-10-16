@@ -4,8 +4,8 @@ import com.example.Mini1st.domain.ChatMessage;
 import com.example.Mini1st.domain.ChatRoom;
 import com.example.Mini1st.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-
 @Controller
 public class ChatController {
 
@@ -24,6 +23,9 @@ public class ChatController {
     private ChatService chatService;
 
     private final SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     public ChatController(SimpMessagingTemplate messagingTemplate) {
@@ -73,6 +75,9 @@ public class ChatController {
     public void sendMessage(ChatMessage message) {
         // 메시지를 해당 채팅방에 브로드캐스트
         messagingTemplate.convertAndSend("/topic/chatRoom/" + message.getRoomId(), message);
-    }
 
+        // Redis에 메시지를 저장
+        String key = "chatRoom:" + message.getRoomId() + ":messages";
+        redisTemplate.opsForList().rightPush(key, message);
+    }
 }

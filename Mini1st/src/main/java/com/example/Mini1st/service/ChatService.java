@@ -4,10 +4,12 @@ import com.example.Mini1st.dao.ChatMessageRepository;
 import com.example.Mini1st.dao.ChatRoomRepository;
 import com.example.Mini1st.domain.ChatMessage;
 import com.example.Mini1st.domain.ChatRoom;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,8 +18,8 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
-
-    private final SimpMessagingTemplate messagingTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;  // 중복된 필드 제거
+    private final ObjectMapper objectMapper;
 
     // 모든 채팅방 조회
     public List<ChatRoom> findAllRoom() {
@@ -50,24 +52,25 @@ public class ChatService {
         return chatRoomRepository.findByRoomId(roomId);
     }
 
+    // 메시지 저장 메서드
+    public void saveMessageToRedis(ChatMessage message) {
+        String key = "chatRoom:" + message.getRoomId() + ":messages";
+        redisTemplate.opsForList().rightPush(key, message);
+    }
+
     // 채팅방 ID로 메시지 조회
     public List<ChatMessage> getMessagesByRoomId(int roomId) {
-        return chatMessageRepository.findMessagesByRoomId(roomId);
-    }
+        String key = "chatRoom:" + roomId + ":messages";
+        List<Object> messages = redisTemplate.opsForList().range(key, 0, -1);
 
-//    // 메시지를 Redis에 저장
-//    public void saveMessageToRedis(ChatMessage message) {
-//        try {
-//            String messageJson = objectMapper.writeValueAsString(message);  // ChatMessage 객체를 JSON 형식으로 변환
-//            redisPublisher.publish(topic, messageJson);  // RedisPublisher를 사용해 메시지를 퍼블리시
-//        } catch (Exception e) {
-//            System.err.println("메시지 변환 중 에러 발생: " + e.getMessage());
-//            e.printStackTrace();
-//        }
-//    }
-// 웹소켓을 통해 메시지 브로드캐스트
-    public void sendMessage(ChatMessage message) {
-        messagingTemplate.convertAndSend("/topic/chatRoom/" + message.getRoomId(), message);
+        // 역직렬화를 통해 List<Object>를 List<ChatMessage>로 변환
+        List<ChatMessage> chatMessages = new ArrayList<>();
+        if (messages != null) {
+            for (Object obj : messages) {
+                ChatMessage chatMessage = objectMapper.convertValue(obj, ChatMessage.class);
+                chatMessages.add(chatMessage);
+            }
+        }
+        return chatMessages;
     }
-
 }
