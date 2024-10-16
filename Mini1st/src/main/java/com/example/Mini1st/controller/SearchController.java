@@ -15,10 +15,6 @@ public class SearchController {
     @Autowired
     SearchMapper dao;
 
-    /********************************************
-            올바른 아이디를 받았을 때 가정하여 작성
-            해당 메서드는 AJAX 구현시 삭제
-    *********************************************/
     @ResponseBody
     @PostMapping("/SearchUser")
     public List<SearchDTO> SearchUser(@RequestBody Map<String, String> requestData){
