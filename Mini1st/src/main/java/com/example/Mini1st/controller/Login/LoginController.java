@@ -35,9 +35,9 @@ public class LoginController {
     @PostMapping("/authenticate")
     public String authenticate(UserAuthenticateDTO user, HttpServletRequest request, Model model) {
         // 입력한 아이디 비밀번호 확인
-        String userId = user.getUserid();
+        String userid = user.getUserId();
         String passwd = user.getUserPw();
-        UserDTO foundUser = userMapper.getUserByIdAndPw(userId, passwd);
+        UserDTO foundUser = userMapper.getUserByIdAndPw(userid, passwd);
 
         if (foundUser != null) {
             HttpSession session = request.getSession(); // 세션 생성
