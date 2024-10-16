@@ -129,5 +129,21 @@
        }
 
     </script>
+
+<!-- 브라우저 비율에 따른 사이드바 숨김 기능 -->
+    <script>
+        // JavaScript for responsive sidebar
+        function handleResize() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth <= 768) {
+                sidebar.style.display = 'none';
+            } else {
+                sidebar.style.display = 'block';
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Call once to set initial state
+    </script>
 </body>
 </html>
