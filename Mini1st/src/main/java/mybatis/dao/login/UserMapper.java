@@ -1,5 +1,6 @@
 package mybatis.dao.login;
 
+import com.example.Mini1st.config.UserAuthenticateDTO;
 import com.example.Mini1st.config.UserDTO;
 import org.apache.ibatis.annotations.*;
 
@@ -27,9 +28,9 @@ public interface UserMapper {
     // 사용자 삭제 나중에 바꿔야함
     @Delete("DELETE FROM users WHERE user_id = #{userId}")
     void deleteUser(String userId);
-    // 로그인
+    // 로그인 인증
     @Select("SELECT * FROM users WHERE user_id = #{userId} AND user_pw = #{userPw}")
-    UserDTO getUserByIdAndPw(@Param("userId") String userId, @Param("userPw") String userPw);
+    UserAuthenticateDTO getUserByIdAndPw(@Param("userId") String userId, @Param("userPw") String userPw);
 
 
 }
