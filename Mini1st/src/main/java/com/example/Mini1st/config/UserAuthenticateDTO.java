@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 public class UserAuthenticateDTO {
-    private String userid;
+    private String userId;
     private String userPw;
     private String email;
     private String name;
