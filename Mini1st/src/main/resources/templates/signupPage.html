@@ -5,24 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instagram 회원가입</title>
     <link rel="stylesheet" href="signup.css">
+    <style>
+        .error-message{
+            display: none;
+            color: red;
+            margin-top: 10px;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .error-message.show {
+            display: block;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <div class="signup-container">
         <div class="logo">Instagram</div>
         <div class="subtitle">친구들의 사진과 동영상을 보려면 가입하세요.</div>
-        <form id="signupForm">
-            <input type="email" id="email" placeholder="휴대폰 번호 또는 이메일 주소" required>
+        <form id="signupForm" action="/signup/join" method="post">
+            <input type="text" name="userId" placeholder="아이디" required>
+            <input type="email" name="email" placeholder="휴대폰 번호 또는 이메일 주소" required>
+            <input type="text" name="name" placeholder="사용자이름" required>
+            <input type="text" name="gender" placeholder="성별" required>
+            <input type="text" name="nickname" placeholder="별명" required>
+            <input type="tel" name="phoneNumber" placeholder="핸드폰번호" required>
             <div id="emailError" class="error"></div>
-            <input type="text" id="fullName" placeholder="성명" required>
-            <input type="text" id="username" placeholder="사용자 이름" required>
             <div id="usernameError" class="error"></div>
             <div id="usernameSuggestions" class="username-suggestions"></div>
             <div class="password-container">
-                <input type="password" id="password" placeholder="비밀번호" required>
+                <input type="password" name="userPw" placeholder="비밀번호" required>
                 <button type="button" id="passwordToggle" class="password-toggle">표시</button>
             </div>
             <div id="passwordError" class="error"></div>
-            <button type="submit">가입</button>
+            <button type="submit" >가입</button>
         </form>
     </div>
 
@@ -36,11 +52,6 @@
         const usernameError = document.getElementById('usernameError');
         const passwordError = document.getElementById('passwordError');
         const usernameSuggestions = document.getElementById('usernameSuggestions');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            validateForm();
-        });
 
         email.addEventListener('blur', validateEmail);
         username.addEventListener('input', validateUsername);
