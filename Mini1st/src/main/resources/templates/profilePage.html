@@ -55,11 +55,11 @@
                 =====================================
             -->
             <div class="profile-info">
-                <h1 th:text="${dummy.user_id}">Name</h1>
+                <h1 th:text="${dummy?.user_id?:_}">Name</h1>
 
                 <div class="profile-stats">
                     <div class="stat">
-                        게시물 <span class="stat-value" th:text="${post_count}">20</span>
+                    <!--    게시물 <span class="stat-value" th:text="${post_count}">20</span>-->
                     </div>
                     <div class="stat">
                         <!-- 팔로우 테이블 -->
@@ -72,8 +72,8 @@
                 </div>
 
                 <div class="profile-bio">
-                    <h2 th:text="${dummy.name}">사용자 이름</h2>
-                    <p th:utext="${dummy.profile_contents}" ></p>
+                    <h2 th:text="${dummy?.name?:_}">사용자 이름</h2>
+                    <p th:utext="${dummy?.profile_contents?:_}" ></p>
                 </div>
 
             </div>
