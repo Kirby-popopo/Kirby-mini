@@ -1,0 +1,23 @@
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 0;
+background-color: #121212;
+color: #fff;
+display: flex;
+}
+
+a {
+text-decoration-line: none;
+color: white;
+}
+
+a:visited{
+color: inherit;
+}
+
+.main-content {
+margin-left: 220px;
+padding: 20px;
+width: calc(100% - 220px);
+}
