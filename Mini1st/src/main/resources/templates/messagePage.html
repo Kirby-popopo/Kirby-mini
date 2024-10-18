@@ -10,33 +10,11 @@
     <!-- 메뉴 css -->
     <link rel="stylesheet" href="/sidebar/menu.css">
     <!-- 공통 베이스 css -->
-    <link rel="stylesheet" href="/base.css">
+    <link rel="stylesheet" href="/base/base.css">
 
     <!-- messagePage css -->
     <link rel="stylesheet" href="/message/messagePage.css">
 
-    <script>
-        function createRoom() {
-            const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
-            if (roomName && roomName.trim() !== "") {
-                fetch('/roomAdd', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'room_name=' + encodeURIComponent(roomName)
-                }).then(response => {
-                    if (response.ok) {
-                        window.location.reload();
-                    } else {
-                        alert('채팅방 생성에 실패했습니다.');
-                    }
-                });
-            } else {
-                alert("채팅방 이름은 필수 입력입니다.");
-            }
-        }
-    </script>
 </head>
 <body>
 <!-- sidebar html 불러오기 -->
@@ -103,34 +81,20 @@
     </div>
 </div>
 
-<!-- 검색, 알림 기능 사이드바 -->
-<div class="menu">
-    <div id="search" class="menu-section">
-        <h2>검색</h2>
-        <input type="text" class="search-bar" placeholder="검색...">
-        <div class="search-item">
-            <img src="/placeholder.svg?height=30&width=30" alt="User">
-            <span>사용자1</span>
-        </div>
-        <div class="search-item">
-            <img src="/placeholder.svg?height=30&width=30" alt="User">
-            <span>사용자2</span>
-        </div>
-    </div>
+    <!-- 검색, 알림 기능 사이드바 -->
+    <div id="menu-container"></div>
 
-    <div id="notifications" class="menu-section">
-        <h2>알림</h2>
-        <div class="notification-item">
-            <img src="/placeholder.svg?height=30&width=30" alt="User">
-            <span>사용자1님이 회원님의 게시물을 좋아합니다.</span>
-        </div>
-        <div class="notification-item">
-            <img src="/placeholder.svg?height=30&width=30" alt="User">
-            <span>사용자2님이 회원님을 팔로우하기 시작했습니다.</span>
-        </div>
-    </div>
-</div>
-<!-- 검색, 알림 기능 사이드바 끝-->
+    <script>
+        fetch('/sidebar/menu.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading menu:', error));
+    </script>
+
+    <script src="/sidebar/menu.js" type="text/javascript"></script>
+    <!-- 검색, 알림 기능 사이드바 끝-->
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -209,24 +173,6 @@
         });
     });
 
-    /*알림 검색 관련 JS*/
-    function showContent(contentId) {
-        const contents = document.querySelectorAll('.menu-section');
-        const targetContent = document.getElementById(contentId);
-
-        if (targetContent.classList.contains('active')) {
-            targetContent.classList.remove('active');
-            setTimeout(() => {
-                document.getElementById('home').classList.add('active');
-            }, 300);
-        } else {
-            contents.forEach(content => content.classList.remove('active'));
-            setTimeout(() => {
-                targetContent.classList.add('active');
-            }, 10);
-        }
-    }
-
-</script>
+    </script>
 </body>
 </html>
