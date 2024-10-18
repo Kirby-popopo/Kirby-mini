@@ -1,6 +1,6 @@
 package mybatis.dao.login;
 
-import com.example.Mini1st.config.UserDTO;
+import com.example.Mini1st.config.UserAuthenticateDTO;
 import com.example.Mini1st.config.UserDTO;
 import org.apache.ibatis.annotations.*;
 
@@ -9,9 +9,9 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
     // 회원가입
-    @Insert("insert into users (user_id, user_pw, email, name, gender, nickname, phone_number, last_login, profile_image)" +
-            "values (#{userId}, #{userPw}, #{email}, #{name}, #{gender}, #{nickname}, #{phoneNumber}, #{lastLogin}, #{profileImage})")
-    boolean insert(UserDTO dto);
+    @Insert("insert into users (user_id, user_pw, email, name, gender, nickname, phone_number, last_login)" +
+            "values (#{userId}, #{userPw}, #{email}, #{name}, #{gender}, #{nickname}, #{phoneNumber}, #{lastLogin})")
+    boolean insert(UserAuthenticateDTO dto);
     // 아이디로 사용자 조회
     @Select("SELECT * FROM users WHERE user_id = #{userId}")
     UserDTO getUserById(String userId);
