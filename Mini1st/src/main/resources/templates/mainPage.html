@@ -21,53 +21,53 @@
     <!-- sidebar html 불러오기 -->
     <div id="sidebar-container"></div>
 
-<script>
-    fetch('/sidebar/sidebar.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('sidebar-container').innerHTML = data;
-        })
-        .catch(error => console.error('Error loading sidebar:', error));
-</script>
-<!-- sidebar html 불러오기 끝 -->
-
-<!-- 해당 부분부터 게시글 가져오는 부분 -->
-<div class="main-content">
-    <div class="post">
-        <div class="post-header">
-            <img id="headerImage" src="https://media.istockphoto.com/id/466167557/ko/%EC%82%AC%EC%A7%84/%EC%8B%A0%EC%83%9D%EC%95%84-chick.jpg?s=612x612&w=0&k=20&c=94vZS_L2t47Yb1DtHTYv1VBjVP6Ecu_SgmH79aCfEfE=" alt="병아리 프로필">
-            <span class="username">병아리</span>
-        </div>
-        <div class="post-image">
-            <img id="selectedImage" src="https://img.freepik.com/premium-photo/fried-rice-with-fried-egg-delicious-food-photography-illustration-created-with-generative-ai_115122-6028.jpg" alt="계란프라이">
-        </div>
-        <div class="post-actions">
-            <button>❤️</button>
-            <button>💬</button>
-            <button>🔖</button>
-        </div>
-        <div class="post-likes">
-            뱀님 외 2명이 좋아합니다
-        </div>
-        <div class="post-content">
-            <span class="username">병아리</span>
-            <span class="content">2024-10-02</span>
-            <span class="content" id="full-content" style="display: none;">갓생살자<br>#아침 #맛있다</span>
-            <span class="more" id="show-more" onclick="toggleContent()">더 보기</span>
-        </div>
-        <div class="post-comments">
-            <p>댓글 2개</p>
-            <div id="comments" style="display: none;">
-                <p><span class="username">뱀</span> 맛있겠다 :)</p>
-                <p><span class="username">사자</span> @호랑이 갓생 가보자고</p>
+    <script>
+        fetch('/sidebar/sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+    <!-- sidebar html 불러오기 끝 -->
+<div class="container">
+    <div class="main-content">
+        <div class="post">
+            <div class="post-header">
+                <img src="https://media.istockphoto.com/id/466167557/ko/%EC%82%AC%EC%A7%84/%EC%8B%A0%EC%83%9D%EC%95%84-chick.jpg?s=612x612&w=0&k=20&c=94vZS_L2t47Yb1DtHTYv1VBjVP6Ecu_SgmH79aCfEfE=" alt="병아리 프로필">
+                <span class="username">병아리</span>
             </div>
-            <span class="more" id="show-comments" onclick="toggleComments()">댓글 모두 보기</span>
-        </div>
-        <div class="comment-input">
-            <input type="text" placeholder="댓글 달기...">
+            <div class="post-image">
+                <img src="https://img.freepik.com/premium-photo/fried-rice-with-fried-egg-delicious-food-photography-illustration-created-with-generative-ai_115122-6028.jpg" alt="계란프라이">
+            </div>
+            <div class="post-actions">
+                <button>❤️</button>
+                <button>💬</button>
+                <button>🔖</button>
+            </div>
+            <div class="post-likes">
+                뱀님 외 2명이 좋아합니다
+            </div>
+            <div class="post-content">
+                <span class="username">병아리</span>
+                <span class="content">2024-10-02</span>
+                <span class="content" id="full-content" style="display: none;">갓생살자<br>#아침 #맛있다</span>
+                <span class="more" id="show-more" onclick="toggleContent()">더 보기</span>
+            </div>
+            <div class="post-comments">
+                <p>댓글 2개</p>
+                <div id="comments" style="display: none;">
+                    <p><span class="username">뱀</span> 맛있겠다 :)</p>
+                    <p><span class="username">사자</span> @호랑이 갓생 가보자고</p>
+                </div>
+                <span class="more" id="show-comments" onclick="toggleComments()">댓글 모두 보기</span>
+            </div>
+                <div class="comment-input">
+                    <input type="text" placeholder="댓글 달기...">
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
 <!-- 해당 부분부터 게시글 가져오는 부분 끝 -->
 
