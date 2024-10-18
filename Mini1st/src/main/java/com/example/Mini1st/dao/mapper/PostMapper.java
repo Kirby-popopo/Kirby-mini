@@ -1,4 +1,4 @@
-package com.example.Mini1st.mapper;
+package com.example.Mini1st.dao.mapper;
 
 
 import com.example.Mini1st.dao.CommentDTO;

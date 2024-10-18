@@ -1,6 +1,6 @@
 package com.example.Mini1st.controller.SignUp;
 
-import com.example.Mini1st.config.UserAuthenticateDTO;
+import com.example.Mini1st.dao.login.UserAuthenticateDTO;
 import mybatis.dao.login.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

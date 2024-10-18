@@ -1,6 +1,6 @@
 package com.example.Mini1st.controller;
 import com.example.Mini1st.dao.PostDTO;
-import com.example.Mini1st.mapper.PostMapper;
+import com.example.Mini1st.dao.mapper.PostMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Base64;
 
 @RestController

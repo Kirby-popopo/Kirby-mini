@@ -1,7 +1,7 @@
 package mybatis.dao.login;
 
-import com.example.Mini1st.config.UserAuthenticateDTO;
-import com.example.Mini1st.config.UserDTO;
+import com.example.Mini1st.dao.login.UserAuthenticateDTO;
+import com.example.Mini1st.dao.login.UserDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

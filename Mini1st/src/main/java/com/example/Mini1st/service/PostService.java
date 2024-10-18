@@ -2,7 +2,7 @@ package com.example.Mini1st.service;
 
 import com.example.Mini1st.dao.CommentDTO;
 import com.example.Mini1st.dao.PostDTO;
-import com.example.Mini1st.mapper.PostMapper;
+import com.example.Mini1st.dao.mapper.PostMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
