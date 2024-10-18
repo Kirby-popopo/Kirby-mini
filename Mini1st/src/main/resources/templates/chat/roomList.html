@@ -2,7 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>채팅방 리스트</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인스타그램 메시지</title>
+
+    <!-- 사이드바 css -->
+    <link rel="stylesheet" href="/sidebar/sidebar.css">
+    <!-- 메뉴 css -->
+    <link rel="stylesheet" href="/sidebar/menu.css">
+    <!-- 공통 베이스 css -->
+    <link rel="stylesheet" href="/base.css">
+    <!-- messagePage css -->
+    <link rel="stylesheet" href="/message/messagePage.css">
+
     <script>
         function createRoom() {
             const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
@@ -31,18 +42,51 @@
     </script>
 </head>
 <body>
-<h1>채팅방 리스트</h1>
+<!-- sidebar html 불러오기 -->
+<div id="sidebar-container"></div>
+<script>
+    fetch('/sidebar/sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('sidebar-container').innerHTML = data;
+    })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+<!-- sidebar html 불러오기 끝 -->
 
-<div th:if="${roomList != null}">
-    <div th:each="room : ${roomList}">
-        <p th:text="${room.room_name}" th:onclick="'enterRoom(' + ${room.roomId} + ')'" style="cursor: pointer;"></p>
+<div class="main-content">
+    <div class="container">
+        <div class="message-sidebar">
+            <div class="header">
+                <div class="message-header">
+                    <h2 class="message-title">채팅방 리스트</h2>
+                </div>
+            </div>
+            <div th:if="${roomList != null}">
+                <ul class="message-list">
+                    <li class="message-item" th:each="room : ${roomList}" th:onclick="'enterRoom(' + ${room.roomId} + ')'" style="cursor: pointer;">
+                        <div class="message-content">
+                            <div class="username" th:text="${room.room_name}"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div th:if="${roomList == null}">
+                <p>현재 생성된 채팅방이 없습니다.</p>
+            </div>
+            <button onclick="createRoom()">채팅방 생성</button>
+        </div>
+        <div class="chat-area">
+            <div id="default-content" class="chat-area">
+                <p>메시지를 선택하거나 새로운 메시지를 보내세요</p>
+                <button class="new-message-btn" id="newMessageBtn">새 메시지</button>
+            </div>
+            <iframe id="chat-frame" src="messageChat.html" frameborder="0" title="채팅 창"></iframe>
+        </div>
     </div>
 </div>
-<div th:if="${roomList == null}">
-    <p>현재 생성된 채팅방이 없습니다.</p>
-</div>
 
-<button onclick="createRoom()">채팅방 생성</button>
+<!-- Rest of the HTML content remains unchanged -->
 
 </body>
 </html>
