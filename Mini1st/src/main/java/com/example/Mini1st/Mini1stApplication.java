@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication//(exclude = DataSourceAutoConfiguration.class)
-@MapperScan(value={"mybatis.dao"})
+@MapperScan(value={"mybatis.dao", "com.example.Mini1st.mapper"})
 public class Mini1stApplication {
 
 	public static void main(String[] args) {
