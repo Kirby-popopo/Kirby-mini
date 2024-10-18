@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class testController {
 
-    @GetMapping("/")
+/*    @GetMapping("/")
     public String test() {
         return "mainPage";
-    }
+    }*/
 
     @GetMapping("/chat")
     public String showChatPage(@RequestParam String username, Model model) {
