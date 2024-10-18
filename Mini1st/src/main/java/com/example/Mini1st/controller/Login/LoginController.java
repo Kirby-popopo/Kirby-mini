@@ -1,7 +1,7 @@
 package com.example.Mini1st.controller.Login;
 
-import com.example.Mini1st.config.UserDTO;
-import com.example.Mini1st.config.UserAuthenticateDTO;
+import com.example.Mini1st.dao.login.UserDTO;
+import com.example.Mini1st.dao.login.UserAuthenticateDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import mybatis.dao.login.UserMapper;

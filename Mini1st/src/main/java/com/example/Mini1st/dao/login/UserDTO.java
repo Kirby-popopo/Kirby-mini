@@ -1,4 +1,4 @@
-package com.example.Mini1st.config;
+package com.example.Mini1st.dao.login;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
