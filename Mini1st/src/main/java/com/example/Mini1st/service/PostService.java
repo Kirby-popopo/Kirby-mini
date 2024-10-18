@@ -20,9 +20,19 @@ public class PostService {
     // 생성자 주입 방식으로 의존성을 주입합니다.
 
     // 게시글 생성
-    public PostDTO createPost(PostDTO postDTO) {
+    public PostDTO createPost(String content_box) {
         // PostMapper를 사용해 데이터베이스에 게시글을 추가합니다.
-        postMapper.insertPost(postDTO);
+        PostDTO postDTO = new PostDTO();
+        /* 더미 1234 유저 생성 */
+        postDTO.setUserId("1234");
+        postDTO.setContents(content_box);
+
+        try {
+            postMapper.insertPost(postDTO);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         return postDTO;
     }
 
@@ -41,7 +51,6 @@ public class PostService {
     // 게시글 업데이트
     public PostDTO updatePost(int postPk, PostDTO postDTO) {
         // 업데이트할 게시글의 ID를 설정한 후, 해당 게시글 정보를 데이터베이스에 업데이트합니다.
-        postDTO.setPostPk(postPk);
         postMapper.updatePost(postDTO);
         return postDTO;
     }

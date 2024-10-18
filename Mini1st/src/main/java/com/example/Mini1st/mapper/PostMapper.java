@@ -11,9 +11,9 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
-    @Insert("INSERT INTO posts (user_id, contents, post_time, location, likes_count) VALUES (#{userId}, #{contents}, NOW(), #{location}, #{likesCount})")
+    @Insert("INSERT INTO posts (user_id, contents, location, likes_count) VALUES (#{userId}, #{contents}, #{location}, #{likesCount})")
         // 데이터베이스에 새로운 게시글을 삽입합니다.
-    void insertPost(PostDTO postDTO);
+    void insertPost(PostDTO postInsertDTO);
 
     @Select("SELECT * FROM posts WHERE post_pk = #{postPk}")
         // 특정 ID를 가진 게시글을 조회합니다.

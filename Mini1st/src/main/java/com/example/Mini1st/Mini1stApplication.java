@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.example.Mini1st.dao")
+@MapperScan("com.example.Mini1st.mapper")
 public class Mini1stApplication {
 
 	public static void main(String[] args) {
