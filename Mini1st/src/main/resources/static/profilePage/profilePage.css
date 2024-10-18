@@ -23,6 +23,28 @@
     display: flex;
     margin-bottom: 20px;
 }
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+.profile-button {
+    padding: 5px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.following-button {
+    background-color: #efefef;
+    color: #000;
+    border: none;
+}
+.message-button {
+    background-color: #efefef;
+    color: #000;
+    border: none;
+}
 .stat {
     margin-right: 40px;
 }
