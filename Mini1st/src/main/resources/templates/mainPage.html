@@ -130,6 +130,13 @@
        }
    }
 
+   var profileButton = document.getElementById("profile");
+   profileButton.addEventListener('click', function(event){
+
+        window.location.href = "/test";
+   });
+
+
    // 게시글 생성 버튼 및 모달 처리
    var createPostButton = document.getElementById("createPost");
    var modal = document.getElementById("createPostModal");

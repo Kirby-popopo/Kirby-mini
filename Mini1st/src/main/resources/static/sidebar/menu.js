@@ -3,6 +3,10 @@
            const contents = document.querySelectorAll('.menu-section');
            const targetContent = document.getElementById(contentId);
 
+           if (contentId=='profile'){
+                location.href = "/test";
+           }
+
            if (targetContent.classList.contains('active')) {
                targetContent.classList.remove('active');
                setTimeout(() => {

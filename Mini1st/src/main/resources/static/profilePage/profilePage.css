@@ -4,37 +4,65 @@
     padding: 30px 20px;
 }
 .profile-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 44px;
-}
-.profile-picture {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-right: 100px;
-}
-.profile-info h1 {
-    font-size: 28px;
-    font-weight: 300;
-    margin-bottom: 12px;
-}
-.profile-stats {
-    display: flex;
-    margin-bottom: 20px;
-}
-.profile-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-.profile-button {
-    padding: 5px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-}
+            display: flex;
+            align-items: flex-start;
+            max-width: 935px;
+            margin: 0 auto;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-right: 100px;
+        }
+        .profile-info {
+            flex-grow: 1;
+        }
+        .profile-username {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 12px;
+        }
+        .profile-actions {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .profile-button {
+            background-color: #fafafa;
+            border: 1px solid #dbdbdb;
+            color: #262626;
+            padding: 5px 9px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .profile-button:hover {
+                    background-color: #efefef;
+                    border-color: #c7c7c7;
+                }
+        .settings-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        .profile-stats {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .stat {
+            margin-right: 40px;
+            font-size: 16px;
+        }
+        .stat-value {
+            font-weight: 600;
+        }
+        .profile-fullname {
+            font-weight: 600;
+            font-size: 16px;
+        }
 .following-button {
     background-color: #efefef;
     color: #000;
@@ -45,12 +73,12 @@
     color: #000;
     border: none;
 }
-.stat {
+/*.stat {
     margin-right: 40px;
 }
 .stat-value {
     font-weight: 600;
-}
+}*/
 .profile-bio {
     margin-bottom: 20px;
 }

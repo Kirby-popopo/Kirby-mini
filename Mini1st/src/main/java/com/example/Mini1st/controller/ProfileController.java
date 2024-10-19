@@ -1,7 +1,9 @@
 package com.example.Mini1st.controller;
 
+import com.example.Mini1st.dao.login.UserDTO;
 import com.example.Mini1st.dao.profile.ProfileDTO;
 import com.example.Mini1st.dao.profile.ProfileDummyDTO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ProfileController {
-    @GetMapping("/{name}")
-    public String showProfilePageUser(@PathVariable String name, Model model) {
+    @GetMapping(value = "profile/{id}")
+    public String showProfilePageUser(@PathVariable String id, Model model) {
          /***********************************************************
          *                  프로필 영역
          *          name get으로 받고 해당 유저의 프로필 정보를 가져옴.
@@ -23,24 +25,41 @@ public class ProfileController {
          * 5. html로 전부 전달.
          **********************************************************/
 
-        model.addAttribute("name", name);
+        model.addAttribute("id", id);
 
         return "profilePage";
     }
 
     @GetMapping("/test")
-    public String show(Model model) {
+    public String show(Model model, HttpSession session) {
         /***********************************************************
                 테스트 영역
          **********************************************************/
 
         ProfileDummyDTO test = new ProfileDummyDTO();
+        UserDTO loginUser = (UserDTO)session.getAttribute("loginMember");
 
-        model.addAttribute("dummy", test);
-        model.addAttribute("post_count", test.GetPostCount());
+        model.addAttribute("loginMember", loginUser);
+        //model.addAttribute("post_count", test.GetPostCount());
 
 
         return "profilePage";
+    }
+
+    @GetMapping("/profileEdit")
+    public String showProfileEdit(Model model, HttpSession session) {
+        /***********************************************************
+         테스트 영역
+         **********************************************************/
+
+        ProfileDummyDTO test = new ProfileDummyDTO();
+        UserDTO loginUser = (UserDTO)session.getAttribute("loginMember");
+
+        model.addAttribute("loginMember", loginUser);
+        //model.addAttribute("post_count", test.GetPostCount());
+
+
+        return "profileEditPage";
     }
 
 }
