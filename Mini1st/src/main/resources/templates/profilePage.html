@@ -1,105 +1,105 @@
-<!DOCTYPE html>
-<html lang="kr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인스타그램 프로필</title>
-    <!-- 사이드바 css -->
-    <link rel="stylesheet" href="/sidebar/sidebar.css">
-    <!-- 메뉴 css -->
-    <link rel="stylesheet" href="/sidebar/menu.css">
-    <!-- 공통 베이스 css -->
-    <link rel="stylesheet" href="/base/base.css">
+<!--<!DOCTYPE html>-->
+<!--<html lang="kr" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>인스타그램 프로필</title>-->
+<!--    &lt;!&ndash; 사이드바 css &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="/sidebar/sidebar.css">-->
+<!--    &lt;!&ndash; 메뉴 css &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="/sidebar/menu.css">-->
+<!--    &lt;!&ndash; 공통 베이스 css &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="/base/base.css">-->
 
-    <!-- profilePage css -->
-    <link rel="stylesheet" href="/profilePage/profilePage.css">
+<!--    &lt;!&ndash; profilePage css &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="/profilePage/profilePage.css">-->
 
-</head>
-<body>
-<!-- sidebar html 불러오기 -->
-<div id="sidebar-container"></div>
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; sidebar html 불러오기 &ndash;&gt;-->
+<!--<div id="sidebar-container"></div>-->
 
-<script>
-    fetch('/sidebar/sidebar.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('sidebar-container').innerHTML = data;
-        })
-        .catch(error => console.error('Error loading sidebar:', error));
-</script>
-<!-- sidebar html 불러오기 끝 -->
+<!--<script>-->
+<!--    fetch('/sidebar/sidebar.html')-->
+<!--        .then(response => response.text())-->
+<!--        .then(data => {-->
+<!--            document.getElementById('sidebar-container').innerHTML = data;-->
+<!--        })-->
+<!--        .catch(error => console.error('Error loading sidebar:', error));-->
+<!--</script>-->
+<!--&lt;!&ndash; sidebar html 불러오기 끝 &ndash;&gt;-->
 
-<!-- 검색, 알림 기능 사이드바 -->
-<div id="menu-container"></div>
+<!--&lt;!&ndash; 검색, 알림 기능 사이드바 &ndash;&gt;-->
+<!--<div id="menu-container"></div>-->
 
-<script>
-    fetch('/sidebar/menu.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('menu-container').innerHTML = data;
-        })
-        .catch(error => console.error('Error loading menu:', error));
-</script>
+<!--<script>-->
+<!--    fetch('/sidebar/menu.html')-->
+<!--        .then(response => response.text())-->
+<!--        .then(data => {-->
+<!--            document.getElementById('menu-container').innerHTML = data;-->
+<!--        })-->
+<!--        .catch(error => console.error('Error loading menu:', error));-->
+<!--</script>-->
 
-<script src="/sidebar/menu.js" type="text/javascript"></script>
-<!-- 검색, 알림 기능 사이드바 끝-->
+<!--<script src="/sidebar/menu.js" type="text/javascript"></script>-->
+<!--&lt;!&ndash; 검색, 알림 기능 사이드바 끝&ndash;&gt;-->
 
-    <div class="container">
+<!--    <div class="container">-->
 
-        <header class="profile-header">
-            <!-- 더미용 소스 -->
-            <img src="/placeholder.svg?height=150&width=150" alt="프로필 사진" class="profile-picture">
-            <!--
-                =====================================
-                        profile-info 작업
-                =====================================
-            -->
-            <div class="profile-info">
-                <h1 th:text="${dummy.user_id}">Name</h1>
+<!--        <header class="profile-header">-->
+<!--            &lt;!&ndash; 더미용 소스 &ndash;&gt;-->
+<!--            <img src="/placeholder.svg?height=150&width=150" alt="프로필 사진" class="profile-picture">-->
+<!--            &lt;!&ndash;-->
+<!--                =====================================-->
+<!--                        profile-info 작업-->
+<!--                =====================================-->
+<!--            &ndash;&gt;-->
+<!--            <div class="profile-info">-->
+<!--                <h1 th:text="${dummy.user_id}">Name</h1>-->
 
-                <div class="profile-stats">
-                    <div class="stat">
-                        게시물 <span class="stat-value" th:text="${post_count}">20</span>
-                    </div>
-                    <div class="stat">
-                        <!-- 팔로우 테이블 -->
-                        팔로워 <span class="stat-value">1,234</span>
-                    </div>
-                    <div class="stat">
-                        <!-- 팔로우 테이블 -->
-                        팔로우 <span class="stat-value">567</span>
-                    </div>
-                </div>
+<!--                <div class="profile-stats">-->
+<!--                    <div class="stat">-->
+<!--                        게시물 <span class="stat-value" th:text="${post_count}">20</span>-->
+<!--                    </div>-->
+<!--                    <div class="stat">-->
+<!--                        &lt;!&ndash; 팔로우 테이블 &ndash;&gt;-->
+<!--                        팔로워 <span class="stat-value">1,234</span>-->
+<!--                    </div>-->
+<!--                    <div class="stat">-->
+<!--                        &lt;!&ndash; 팔로우 테이블 &ndash;&gt;-->
+<!--                        팔로우 <span class="stat-value">567</span>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-                <div class="profile-bio">
-                    <h2 th:text="${dummy.name}">사용자 이름</h2>
-                    <p th:utext="${dummy.profile_contents}" ></p>
-                </div>
+<!--                <div class="profile-bio">-->
+<!--                    <h2 th:text="${dummy.name}">사용자 이름</h2>-->
+<!--                    <p th:utext="${dummy.profile_contents}" ></p>-->
+<!--                </div>-->
 
-            </div>
-        </header>
+<!--            </div>-->
+<!--        </header>-->
 
-        <main class="gallery">
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 1">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 2">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 3">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 4">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 5">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 6">
-            </div>
-        </main>
+<!--        <main class="gallery">-->
+<!--            <div class="gallery-item">-->
+<!--                <img src="/placeholder.svg?height=293&width=293" alt="게시물 1">-->
+<!--            </div>-->
+<!--            <div class="gallery-item">-->
+<!--                <img src="/placeholder.svg?height=293&width=293" alt="게시물 2">-->
+<!--            </div>-->
+<!--            <div class="gallery-item">-->
+<!--                <img src="/placeholder.svg?height=293&width=293" alt="게시물 3">-->
+<!--            </div>-->
+<!--            <div class="gallery-item">-->
+<!--                <img src="/placeholder.svg?height=293&width=293" alt="게시물 4">-->
+<!--            </div>-->
+<!--            <div class="gallery-item">-->
+<!--                <img src="/placeholder.svg?height=293&width=293" alt="게시물 5">-->
+<!--            </div>-->
+<!--            <div class="gallery-item">-->
+<!--                <img src="/placeholder.svg?height=293&width=293" alt="게시물 6">-->
+<!--            </div>-->
+<!--        </main>-->
 
-    </div>
-</body>
-</html>
+<!--    </div>-->
+<!--</body>-->
+<!--</html>-->
