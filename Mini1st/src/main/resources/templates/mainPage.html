@@ -104,6 +104,7 @@
 
 <script src="/sidebar/menu.js" type="text/javascript"></script>
 <!-- 검색, 알림 기능 사이드바 끝-->
+
 <script>
     // 게시글 컨텐츠 토글관련
    function toggleContent() {
@@ -143,6 +144,7 @@
 
    // 게시글 생성 버튼을 클릭했을 때 모달을 여는 기능 추가
    document.addEventListener('click', function(event) {
+       console.log("test");
        if (event.target && event.target.id === 'createPost') {
            modal.style.display = "block"; // 게시글 작성 모달을 열기
        }
