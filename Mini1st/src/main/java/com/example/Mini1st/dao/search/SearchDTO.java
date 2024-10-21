@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SearchDTO {
-    private String userId;
+    private String user_id;
     private String email;
     private String name;
     private Gender gender;

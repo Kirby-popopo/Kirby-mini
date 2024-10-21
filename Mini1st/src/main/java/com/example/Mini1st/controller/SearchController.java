@@ -28,7 +28,7 @@ public class SearchController {
         }catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println(users);
+
         return users;
     }
 
