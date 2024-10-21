@@ -3,6 +3,10 @@
            const contents = document.querySelectorAll('.menu-section');
            const targetContent = document.getElementById(contentId);
 
+           if (contentId=='profile'){
+                location.href = "/profile";
+           }
+
            if (targetContent.classList.contains('active')) {
                targetContent.classList.remove('active');
                setTimeout(() => {
@@ -33,7 +37,7 @@
 
                     search_section.innerHTML = "";
                         users.forEach(user => {
-                            search_section.innerHTML += `<a href="http://localhost:8090/${user.name}">
+                            search_section.innerHTML += `<a href="http://localhost:8090/profile/${user.user_id}">
                                                             <div class="search-item">
                                                                 <img src="/placeholder.svg?height=30&width=30" alt="User">
                                                                 <span>${user.name}</span>

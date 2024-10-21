@@ -45,61 +45,91 @@
 <!-- 검색, 알림 기능 사이드바 끝-->
 
     <div class="container">
-
         <header class="profile-header">
-            <!-- 더미용 소스 -->
             <img src="/placeholder.svg?height=150&width=150" alt="프로필 사진" class="profile-picture">
-            <!--
-                =====================================
-                        profile-info 작업
-                =====================================
-            -->
             <div class="profile-info">
-                <h1 th:text="${dummy.user_id}">Name</h1>
+                <h1 class="profile-username" th:text="${profile?.user_id?:_}">mysk423</h1>
+                <div class="profile-actions">
 
+                    <!-- 프로필 편집 버튼, 팔로우 버튼 -->
+                    <button th:if="${session.loginMember.user_id == profile.user_id}" class="profile-button" id="profileEdit">프로필 편집</button>
+                    <th:block th:unless="${session.loginMember.user_id == profile.user_id}">
+                        <button th:if="${isFollow}" class="profile-button" id="unfollow-button" onclick="Unfollow(#{profile.user_id})">팔로잉</button>
+                        <button th:unless="${isFollow}" class="profile-button" id="follow-button" onclick="Follow(#{profile.user_id}">팔로우</button>
+                    </th:block>
+                    <!-- 프로필 편집 버튼, 팔로우 버튼 끝 -->
+
+                    <script>
+                        <!-- 로그인 한 유저가 프로필 보고있는 유저를 unfollow -->
+                        function Unfollow(targetUser){
+                            let xhr = new XMLHttpRequest();
+       	                    let unFollowButton = document.getElementById("unfollow-button");
+
+       	                    xhr.onload = function() {
+       	                    	if (xhr.status == 200) {
+                                unFollowButton.onclick = Follow;
+                                unFollowButton.innerText = "팔로우";
+       	                    };
+
+       	                    xhr.open('POST', '/UnFollow', true);
+       	                    xhr.setRequestHeader('Content-Type', 'application/json');
+       	                    xhr.send(JSON.stringify({ targetUser: targetUser }));
+                        }
+
+                        <!-- 로그인 한 유저가 프로필 보고있는 유저를 follow -->
+                        function Follow(targetUser){
+                            let xhr = new XMLHttpRequest();
+       	                    let FollowButton = document.getElementById("follow-button");
+
+       	                    xhr.onload = function() {
+       	                    	if (xhr.status == 200) {
+                                FollowButton.onclick = Unfollow;
+                                FollowButton.innerText = "팔로잉";
+       	                    };
+
+       	                    xhr.open('POST', '/Follow', true);
+       	                    xhr.setRequestHeader('Content-Type', 'application/json');
+       	                    xhr.send(JSON.stringify({ targetUser: targetUser }));
+                        }
+                    </script>
+
+                    <button class="profile-button">보관된 스토리 보기</button>
+                    <svg aria-label="옵션" class="settings-icon" fill="#262626" height="24" viewBox="0 0 48 48" width="24">
+                        <path d="M46.7 20.6l-2.1-1.1c-.4-.2-.7-.5-.8-1-.5-1.6-1.1-3.2-1.9-4.7-.2-.4-.3-.8-.1-1.2l.8-2.3c.2-.5 0-1.1-.4-1.5l-2.9-2.9c-.4-.4-1-.5-1.5-.4l-2.3.8c-.4.1-.8.1-1.2-.1-1.4-.8-3-1.5-4.6-1.9-.4-.1-.8-.4-1-.8l-1.1-2.2c-.3-.5-.8-.8-1.3-.8h-4.1c-.6 0-1.1.3-1.3.8l-1.1 2.2c-.2.4-.5.7-1 .8-1.6.5-3.2 1.1-4.6 1.9-.4.2-.8.3-1.2.1l-2.3-.8c-.5-.2-1.1 0-1.5.4L5.9 8.8c-.4.4-.5 1-.4 1.5l.8 2.3c.1.4.1.8-.1 1.2-.8 1.5-1.5 3-1.9 4.7-.1.4-.4.8-.8 1l-2.1 1.1c-.5.3-.8.8-.8 1.3V26c0 .6.3 1.1.8 1.3l2.1 1.1c.4.2.7.5.8 1 .5 1.6 1.1 3.2 1.9 4.7.2.4.3.8.1 1.2l-.8 2.3c-.2.5 0 1.1.4 1.5L8.8 42c.4.4 1 .5 1.5.4l2.3-.8c.4-.1.8-.1 1.2.1 1.4.8 3 1.5 4.6 1.9.4.1.8.4 1 .8l1.1 2.2c.3.5.8.8 1.3.8h4.1c.6 0 1.1-.3 1.3-.8l1.1-2.2c.2-.4.5-.7 1-.8 1.6-.5 3.2-1.1 4.6-1.9.4-.2.8-.3 1.2-.1l2.3.8c.5.2 1.1 0 1.5-.4l2.9-2.9c.4-.4.5-1 .4-1.5l-.8-2.3c-.1-.4-.1-.8.1-1.2.8-1.5 1.5-3 1.9-4.7.1-.4.4-.8.8-1l2.1-1.1c.5-.3.8-.8.8-1.3v-4.1c.4-.5.1-1.1-.4-1.3zM24 41.5c-9.7 0-17.5-7.8-17.5-17.5S14.3 6.5 24 6.5 41.5 14.3 41.5 24 33.7 41.5 24 41.5z"></path>
+                    </svg>
+                </div>
                 <div class="profile-stats">
                     <div class="stat">
-                        게시물 <span class="stat-value" th:text="${post_count}">20</span>
+                        게시물 <span class="stat-value" th:text="${ postsCount?:_ }">1</span>
                     </div>
                     <div class="stat">
-                        <!-- 팔로우 테이블 -->
-                        팔로워 <span class="stat-value">1,234</span>
+                        팔로워 <span class="stat-value" th:text="${ followCount?:_ }">28</span>
                     </div>
                     <div class="stat">
-                        <!-- 팔로우 테이블 -->
-                        팔로우 <span class="stat-value">567</span>
+                        팔로우 <span class="stat-value" th:text="${ followingCount?:_ }">15</span>
                     </div>
                 </div>
-
-                <div class="profile-bio">
-                    <h2 th:text="${dummy.name}">사용자 이름</h2>
-                    <p th:utext="${dummy.profile_contents}" ></p>
-                </div>
-
+                <div class="profile-fullname" th:text="${ profile?.name?:_ }">문태성</div>
             </div>
         </header>
-
         <main class="gallery">
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 1">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 2">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 3">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 4">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 5">
-            </div>
-            <div class="gallery-item">
-                <img src="/placeholder.svg?height=293&width=293" alt="게시물 6">
-            </div>
+            <th:block th:each="post : ${posts}">
+                <div class="gallery-item">
+                    <img th:src="@{${post?.image_link?:_}}" alt="게시물 1">
+                    <!-- TODO : 클릭하면 해당 게시글로 이동하게 만들어야 함. -->
+                </div>
+            </th:block>
         </main>
 
+        <!-- 프로필 -->
+        <script>
+            var profileEditDOM = document.getElementById('profileEdit');
+                if(profileEditDOM != null){
+                    profileEditDOM.addEventListener('click', function(e){
+                    location.href = "profileEdit";
+                });
+            };
+        </script>
     </div>
 </body>
 </html>

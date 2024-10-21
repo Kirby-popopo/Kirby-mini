@@ -12,6 +12,7 @@ public interface UserMapper {
     @Insert("insert into users (user_id, user_pw, email, name, gender, nickname, phone_number, last_login)" +
             "values (#{userId}, #{userPw}, #{email}, #{name}, #{gender}, #{nickname}, #{phoneNumber}, #{lastLogin})")
     boolean insert(UserAuthenticateDTO dto);
+
     // 아이디로 사용자 조회
     @Select("SELECT * FROM users WHERE user_id = #{userId}")
     UserDTO getUserById(String userId);
@@ -32,6 +33,5 @@ public interface UserMapper {
     // 로그인 인증
     @Select("SELECT * FROM users WHERE user_id = #{userId} AND user_pw = #{userPw}")
     UserDTO getUserByIdAndPw(@Param("userId") String userId, @Param("userPw") String userPw);
-
 
 }

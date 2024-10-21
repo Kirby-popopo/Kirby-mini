@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 public class UserDTO {
-    private String userid;
+    private String user_id;
     private String email;
     private String name;
     private String gender;
@@ -21,4 +21,5 @@ public class UserDTO {
     private LocalDateTime createdAt;
     private LocalDateTime lastLogin;
     private String profileImage;
+
 }
