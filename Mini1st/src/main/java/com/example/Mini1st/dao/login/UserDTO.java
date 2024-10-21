@@ -12,13 +12,11 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 public class UserDTO {
-    private String userid;
+    private String user_id;
     private String email;
     private String name;
     private String gender;
     private String nickname;
-    private String phoneNumber;
-    private LocalDateTime createdAt;
-    private LocalDateTime lastLogin;
-    private String profileImage;
+    private String phone_Number;
+    private LocalDateTime last_Login;
 }
