@@ -2,13 +2,13 @@ package com.example.Mini1st.controller;
 
 import com.example.Mini1st.dao.login.UserDTO;
 import com.example.Mini1st.dao.profile.*;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class ProfileController {
         return "profilePage";
     }
 
-    @GetMapping("/profile")
+    @PostMapping("/profile")
     public String show(Model model, HttpSession session) {
         /***********************************************************
                 테스트 영역
@@ -67,7 +67,6 @@ public class ProfileController {
 
         model.addAttribute("loginMember", loginUser);
         //model.addAttribute("post_count", test.GetPostCount());
-
 
         return "redirect:profile/" + loginUser.getUser_id();
     }
