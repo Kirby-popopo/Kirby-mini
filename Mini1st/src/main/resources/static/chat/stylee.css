@@ -4,15 +4,22 @@ body, html {
     padding: 0;
     height: 100%;
     font-family: Arial, sans-serif;
-    background-color: #000;
-    display: flex;
 }
 
-.app-container {
+a {
+    text-decoration-line: none;
+    color: white;
+}
+
+a:visited{
+    color: inherit;
+}
+
+/*.app-container {
     display: flex;
     width: 100%;
     height: 100%;
-}
+}*/
 
 /* 좌측 채팅방 리스트 스타일 */
 .message-sidebar {
@@ -53,29 +60,30 @@ body, html {
 }
 
 /* 우측 채팅 영역 스타일 */
-.chat-container {
+/*.chat-container {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     background-color: #000;
     height: 100%;
-}
+}*/
 
-.chat-header {
+/*.chat-header {
     padding: 10px;
     border-bottom: 1px solid #333;
     color: #fff;
-}
+}*/
 
-.chat-area {
+/*.chat-area {
     flex-grow: 1;
     overflow-y: auto;
     padding: 10px;
     display: flex;
     flex-direction: column;
-    background-color: #000; /* 채팅 영역의 배경색 고정 */
-}
+    background-color: #000; *//* 채팅 영역의 배경색 고정 *//*
+}*/
 
+/*
 .input-area {
     display: flex;
     padding: 10px;
@@ -104,6 +112,7 @@ body, html {
 #sendButton:disabled {
     background-color: #555;
 }
+*/
 
 .message {
     max-width: 70%;
@@ -122,4 +131,60 @@ body, html {
 .received {
     align-self: flex-start;
     background-color: #333;
+}
+
+/* 아래로 수정사항 */
+.app-container {
+    display: flex;
+    height: 100%;
+}
+
+.main-content {
+    flex-grow: 1;
+    background-color: #000;
+    padding-left: 150px;
+    color: #fff;
+    display: flex;
+}
+.chat-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.chat-header {
+    padding: 20px;
+    border-bottom: 1px solid #262626;
+}
+.chat-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+}
+.input-area {
+    display: flex;
+    padding: 20px;
+    border-top: 1px solid #262626;
+}
+#messageInput {
+    flex-grow: 1;
+    background-color: #262626;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+}
+#sendButton {
+    background-color: #0095f6;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+#sendButton:disabled {
+    background-color: #00376b;
+    cursor: not-allowed;
 }
