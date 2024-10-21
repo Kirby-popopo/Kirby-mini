@@ -4,6 +4,7 @@ import com.example.Mini1st.dao.mapper.PostMapper;
 import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Profiles;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,12 +15,12 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 
-@RestController
+@Controller
 public class PostController {
     @Autowired
     PostMapper postDAO;
 
-
+    @PostMapping("/posts")
     public String createPost(@RequestParam("base64Image") String base64Image,
                              @RequestParam("content_box") String contentBox) {
         try {
@@ -31,7 +32,7 @@ public class PostController {
             byte[] imageBytes = Base64.getDecoder().decode(imageString);
 
             // 저장할 경로 설정 - 프로젝트 디렉터리의 static/images 폴더
-            String directory = new File("src/main/resources/static/images").getAbsolutePath();
+            String directory = new File("/images").getAbsolutePath();
             String filePath = directory + "/uploaded_image_" + System.currentTimeMillis() + ".png";
 
             // 이미지 파일 저장
@@ -45,6 +46,7 @@ public class PostController {
             PostDTO insetData = new PostDTO();
             insetData.setUserId("1234");
             insetData.setContents(contentBox);
+            insetData.setImage_link(filePath);
 
             try {
                 postDAO.insertPost(insetData);
@@ -55,13 +57,11 @@ public class PostController {
             //리다이렉트로 게시물 저장되었을때 main-> post_list (무한스크롤)-> postModal상세페이지 로 이동
             // 리다이렉트로 프로파일 > 게시물 리스트 > 올린 게시물 팝업창 이동
             /*List<PostDTO> getAllPosts */
-            return "redirect:/profiles/";
+            return "redirect:/profile";
         } catch (IOException e) {
             e.printStackTrace();
             return "이미지 업로드 중 오류가 발생했습니다.";
         }
     }
-
-
     }
 
