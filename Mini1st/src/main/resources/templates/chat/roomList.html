@@ -84,7 +84,7 @@
     function enterRoom(roomId) {
         const chatRoomFrame = document.getElementById('chatRoomFrame');
         if (chatRoomFrame) {
-            chatRoomFrame.src = `http://localhost:8090/chatRoom/${roomId}`;
+            chatRoomFrame.src = `/chatRoom/${roomId}`;
         } else {
             console.error('Chat room frame not found.');
         }

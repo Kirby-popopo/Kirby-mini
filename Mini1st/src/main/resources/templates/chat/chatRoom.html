@@ -87,8 +87,6 @@
         return pathSegments[pathSegments.length - 1]; // URL의 마지막 부분에서 roomId를 추출
     }
 
-    console.log('Extracted roomId:', roomId); // roomId가 제대로 출력되는지 확인
-
     // 웹소켓 연결 및 STOMP 클라이언트 설정
     function connect() {
         if (!roomId) {
@@ -158,16 +156,6 @@
         }
     }
 
-    fetch(`/chat/messages/previous?roomId=${roomId}&before=${oldestMessageDate}&limit=20`)
-        .then(response => {
-        console.log('Response:', response);
-        return response.text(); // JSON 대신 plain text로 확인해 보기
-    })
-        .then(data => {
-        console.log('Data received:', data);
-    })
-        .catch(err => console.error('Error occurred:', err));
-
     function loadPreviousMessages() {
         const chatMessages = document.getElementById('chatMessages');
         const previousHeight = chatMessages.scrollHeight;
@@ -175,15 +163,12 @@
         // fetch 요청을 통해 이전 메시지를 불러오기
         fetch(`/chat/messages/previous?roomId=${roomId}&before=${oldestMessageDate}&limit=20`)
             .then((response) => {
-            // fetch 응답이 잘 왔는지 체크
-            console.log('Fetch response status:', response.status);
             if (!response.ok) {
                 throw new Error('Network response was not ok: ' + response.statusText);
             }
             return response.json();
         })
             .then((data) => {
-            console.log('Data received:', data); // 받은 데이터 출력
             if (data.length > 0) {
                 data.forEach(function (message) {
                     const newMessage = document.createElement('div');
@@ -209,14 +194,10 @@
 
                 // 이전 메시지를 로드한 후 스크롤 위치를 유지
                 chatMessages.scrollTop = chatMessages.scrollHeight - previousHeight;
-            } else {
-                console.log('No previous messages found.');
             }
         })
             .catch((err) => console.error('Error loading previous messages:', err));
     }
-
-
 
     // 이벤트 리스너 설정 함수
     function setupEventListeners() {

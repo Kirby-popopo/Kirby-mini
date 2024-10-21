@@ -11,7 +11,7 @@ public interface ChatRoomRepository {
     @Select("select * from chat_Rooms")
     public List<ChatRoom> findAllRoom();
 
-    @Select("SELECT * FROM chat_Rooms WHERE room_pk = #{roomId}")
+    @Select("SELECT * FROM chat_Rooms WHERE roomId = #{roomId}")
     ChatRoom findByRoomId(int roomId);
 
     @Insert("INSERT INTO chat_Rooms (room_name) VALUES (#{room_name})")
