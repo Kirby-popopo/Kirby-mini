@@ -12,9 +12,8 @@ public interface UserMapper {
     @Insert("insert into users (user_id, user_pw, email, name, gender, nickname, phone_number, last_login)" +
             "values (#{userId}, #{userPw}, #{email}, #{name}, #{gender}, #{nickname}, #{phoneNumber}, #{lastLogin})")
     boolean insert(UserAuthenticateDTO dto);
-
     // 아이디로 사용자 조회
-    @Select("SELECT * FROM users WHERE user_id = #{userId}")
+    @Select("SELECT user_id FROM users WHERE user_id = #{userId}")
     UserDTO getUserById(String userId);
 
     // 모든 사용자 조회
@@ -31,7 +30,10 @@ public interface UserMapper {
     void deleteUser(String userId);
 
     // 로그인 인증
-    @Select("SELECT * FROM users WHERE user_id = #{userId} AND user_pw = #{userPw}")
+    @Select("SELECT user_id, user_pw FROM users WHERE user_id = #{userId} AND user_pw = #{userPw}")
     UserDTO getUserByIdAndPw(@Param("userId") String userId, @Param("userPw") String userPw);
 
+    // 아이디 중복체크
+    @Select("SELECT COUNT(user_id) FROM users WHERE user_id = #{userId}")
+    public int idCheck(String userId);
 }

@@ -5,9 +5,7 @@ import mybatis.dao.login.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -31,8 +29,7 @@ public class SignUpController {
 
     // 회원가입 요청 처리
     @PostMapping("/join")
-    public String join(UserAuthenticateDTO user, Model model) {
-
+    public String join( UserAuthenticateDTO user, Model model) {
         try {
             // 회원 정보를 데이터베이스에 저장하는 로직
             boolean joinUser = userMapper.insert(user);
@@ -45,6 +42,14 @@ public class SignUpController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // 사용자 ID 중복 확인 요청 처리
+    @PostMapping("/checkId")
+    @ResponseBody
+    public boolean checkId(@RequestParam String userId) {
+        int count = userMapper.idCheck(userId);
+        return count > 0;  // 중복된 경우 true 반환
     }
 }
 
