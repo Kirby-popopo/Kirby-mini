@@ -85,10 +85,13 @@
             <input type="hidden" id="base64Image" name="base64Image">
             <textarea name="content_box" maxlength="2200" placeholder="게시글 내용을 입력하세요"></textarea>
             <input type="submit" value="공유하기">
+            <a herf="/mainPage">취소</a>
         </form>
     </div>
 </div>
 <!-- 게시글 입력 하는 부분 끝 -->
+<!--게시글 입력 후 리다이렉트 + 팝업창 띄우기 (작성한 게시글 미리보기)-->
+
 
 <!-- 검색, 알림 기능 사이드바 -->
 
@@ -98,6 +101,22 @@
         .then(response => response.text())
         .then(data => {
             document.getElementById('menu-container').innerHTML = data;
+
+             var createPostButton = document.getElementById("createPost");
+        var modal = document.getElementById("createPostModal");
+
+        if (createPostButton) {
+            createPostButton.addEventListener('click', function(event) {
+                console.log("test");
+                modal.style.display = "block"; // 게시글 작성 모달을 열기
+            });
+        }
+
+   window.onclick = function(event) {
+       if (event.target == modal) {
+           modal.style.display = "none"; // 모달 외부를 클릭하면 모달 닫기
+       }
+   }
         })
         .catch(error => console.error('Error loading menu:', error));
 </script>
@@ -136,29 +155,6 @@
 
         window.location.href = "/test";
    });
-
-
-   // 게시글 생성 버튼 및 모달 처리
-   var createPostButton = document.getElementById("createPost");
-   var modal = document.getElementById("createPostModal");
-
-   // 게시글 생성 버튼을 클릭했을 때 모달을 여는 기능 추가
-   document.addEventListener('click', function(event) {
-       console.log("test");
-       if (event.target && event.target.id === 'createPost') {
-           modal.style.display = "block"; // 게시글 작성 모달을 열기
-       }
-   });
-
-   window.onclick = function(event) {
-       if (event.target == modal) {
-           modal.style.display = "none"; // 모달 외부를 클릭하면 모달 닫기
-       }
-   }
-
-   document.querySelector('.modal-content').onclick = function(event) {
-       event.stopPropagation(); // 모달 내부 클릭 시 닫히는 것을 방지
-   };
 
    // 파일 선택 후 이미지 미리보기 및 Base64 인코딩 처리
    function convertToBase64(event) {

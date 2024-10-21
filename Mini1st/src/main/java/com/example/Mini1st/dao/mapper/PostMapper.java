@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
-    @Insert("INSERT INTO posts (user_id, contents, location, likes_count) VALUES (#{userId}, #{contents}, #{location}, #{likesCount})")
+    @Insert("INSERT INTO posts (user_id, contents, location, likes_count, image_link) VALUES (#{userId}, #{contents}, #{location}, #{likesCount}, #{image_link})")
         // 데이터베이스에 새로운 게시글을 삽입합니다.
     void insertPost(PostDTO postInsertDTO);
 

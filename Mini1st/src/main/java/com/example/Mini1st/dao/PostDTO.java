@@ -15,5 +15,6 @@ public class PostDTO {
     private String contents;
     private String location;
     private int likesCount;
+    private String image_link;
 }
 

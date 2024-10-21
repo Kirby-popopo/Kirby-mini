@@ -37,16 +37,21 @@ public class LoginController {
         // 입력한 아이디 비밀번호 확인
         String userid = user.getUserId();
         String passwd = user.getUserPw();
-        UserDTO foundUser = userMapper.getUserByIdAndPw(userid, passwd);
+        try {
+            UserDTO foundUser = userMapper.getUserByIdAndPw(userid, passwd);
 
-        if (foundUser != null) {
-            HttpSession session = request.getSession(); // 세션 생성
-            session.setAttribute("loginMember", foundUser); // 로그인 멤버 정보를 세션에 저장
-            return "redirect:/"; // 로그인 성공 시 홈 화면으로 리다이렉트
-        } else {
-            model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
-            return "loginPage"; // 로그인 실패 시 로그인 페이지로 리턴 (에러 메시지 포함)
+            if (foundUser != null) {
+                HttpSession session = request.getSession(); // 세션 생성
+                session.setAttribute("loginMember", foundUser); // 로그인 멤버 정보를 세션에 저장
+                return "redirect:/"; // 로그인 성공 시 홈 화면으로 리다이렉트
+            } else {
+                model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
+                return "loginPage"; // 로그인 실패 시 로그인 페이지로 리턴 (에러 메시지 포함)
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
+return null;
     }
 
     // 로그아웃 요청 처리
