@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${chatRoom.room_name} + ' - 채팅방'">채팅방</title>
+<!--    <title th:text="${chatRoom.room_name} + ' - 채팅방'">채팅방</title>-->
+    <title>채팅방</title>
     <script src="https://cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
@@ -15,59 +16,14 @@
             color: #fff;
         }
         .container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .main-content {
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
-        .chat-header, .input-area {
-            border-bottom: 1px solid #333;
-            padding: 10px;
-        }
-        .small-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .chat-info {
-            flex-grow: 1;
-        }
-        .chat-username {
-            font-weight: bold;
-        }
-        .chat-status {
-            font-size: 0.8em;
-            color: #888;
-        }
-        .chat-top {
-            text-align: center;
-            padding: 20px 0;
-        }
-        .chat-top-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin-bottom: 10px;
-        }
-        .profile-view-btn {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-        #chatMessages {
-            flex-grow: 1;
+        .chat-area {
+            flex: 1;
             overflow-y: auto;
             padding: 20px;
-            scrollbar-width: thin;
-            scrollbar-color: #333 #000;
         }
         .message {
             max-width: 70%;
@@ -88,108 +44,90 @@
             float: right;
             border-radius: 20px 20px 0 20px;
         }
-        .timestamp {
-            font-size: 0.8em;
-            color: #888;
-            margin: 10px 0;
-            text-align: center;
-            clear: both;
-        }
+
         .input-area {
             display: flex;
             padding: 10px;
+            border-top: 1px solid #333;
         }
         #messageInput {
             flex-grow: 1;
             padding: 10px;
             border: none;
-            border-radius: 20px;
             background-color: #333;
             color: #fff;
-            margin-right: 10px;
         }
         #sendButton {
+            padding: 10px;
             background-color: #0095f6;
-            color: #fff;
+            color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="main-content">
-        <div class="chat-header">
-            <img src="/placeholder.svg?height=40&width=40" th:alt="${chatRoom.room_name}" class="small-avatar">
-            <div class="chat-info">
-                <div class="chat-username" th:text="${chatRoom.room_name}">채팅방 이름</div>
-                <div class="chat-status">Instagram</div>
-            </div>
-        </div>
-        <div class="chat-top">
-            <img src="/placeholder.svg?height=80&width=80" th:alt="${chatRoom.room_name}" class="chat-top-avatar">
-            <div class="chat-top-username" th:text="${chatRoom.room_name}">채팅방 이름</div>
-            <button class="profile-view-btn">프로필 보기</button>
-        </div>
-        <div id="chatMessages">
-            <div id="messageList" th:each="message : ${messages}">
-                <div th:if="${message.displayDate != null}" class="timestamp">
-                    <strong th:text="${message.displayDate}"></strong>
-                </div>
-                <div th:class="${message.sender == '사용자 이름' ? 'message sent' : 'message received'}">
-                    <span th:text="${message.sender} + ': ' + ${message.message}"></span>
-                </div>
-            </div>
-        </div>
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="메시지를 입력하세요">
-            <button id="sendButton" disabled>전송</button>
-        </div>
+    <div id="chatMessages" class="chat-area"></div>
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="메시지를 입력하세요">
+        <button id="sendButton">전송</button>
     </div>
 </div>
 
 <script th:inline="javascript">
     let stompClient = null;
-    const roomId = /*[[${chatRoom.roomId}]]*/ '[[${chatRoom.roomId}]]'; // 채팅방 ID
-    const currentUserName = 'User-' + Math.floor(Math.random() * 10000); // 임의의 사용자 이름 생성
-    let oldestMessageDate = new Date().toISOString(); // 가장 오래된 메시지의 날짜
+    let roomId = getRoomIdFromUrl(); // URL에서 roomId를 추출
+    const currentUserName = 'User-' + Math.floor(Math.random() * 10000);
+    let oldestMessageDate = new Date().toISOString();
+
+    // URL에서 roomId를 추출하는 함수
+    function getRoomIdFromUrl() {
+        const url = new URL(window.location.href);
+        const pathSegments = url.pathname.split('/');
+        return pathSegments[pathSegments.length - 1]; // URL의 마지막 부분에서 roomId를 추출
+    }
+
+    console.log('Extracted roomId:', roomId); // roomId가 제대로 출력되는지 확인
 
     // 웹소켓 연결 및 STOMP 클라이언트 설정
     function connect() {
-        const socket = new SockJS('/ws-stomp'); // SockJS 인스턴스 생성
-        stompClient = Stomp.over(socket); // STOMP 클라이언트 생성
+        if (!roomId) {
+            console.error('roomId를 찾을 수 없습니다.');
+            return;
+        }
+
+        const socket = new SockJS('/ws-stomp');
+        stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame + ' as ' + currentUserName);
 
             // 채팅방 구독
             stompClient.subscribe('/topic/chatRoom/' + roomId, function (message) {
                 const receivedMessage = JSON.parse(message.body);
-                showMessage(receivedMessage); // 수신된 메시지 화면에 표시
+                showMessage(receivedMessage);
             });
         }, function (error) {
-            console.error('STOMP error: ' + error); // 연결 실패 시 에러 로그 출력
+            console.error('STOMP error: ' + error);
         });
     }
 
     // 메시지 전송 함수
     function sendMessage() {
-        const messageContent = document.getElementById('messageInput').value;
+        const messageInput = document.getElementById('messageInput');
+        const messageContent = messageInput.value;
 
-        // 메시지가 비어있지 않고 STOMP 클라이언트가 연결된 경우
         if (messageContent.trim() !== "" && stompClient && stompClient.connected) {
             const message = {
                 type: 'TALK',
-                sender: currentUserName, // 현재 사용자 이름(지금은 임시 유저)을 메시지에 포함
+                sender: currentUserName,
                 message: messageContent,
                 roomId: roomId,
-                sendDate: new Date().toISOString() // 현재 시간 설정
+                sendDate: new Date().toISOString()
             };
-            stompClient.send("/app/chat/message", {}, JSON.stringify(message)); // 메시지 전송
-            document.getElementById('messageInput').value = ''; // 입력 필드 비우기
+            stompClient.send("/app/chat/message", {}, JSON.stringify(message));
+            messageInput.value = '';
         } else {
-            console.error("웹소켓이 연결되지 않았습니다."); // 연결되지 않았을 때 에러 로그 출력
+            console.error("웹소켓이 연결되지 않았습니다.");
         }
     }
 
@@ -220,23 +158,38 @@
         }
     }
 
-    // 이전 메시지를 불러오는 함수
+    fetch(`/chat/messages/previous?roomId=${roomId}&before=${oldestMessageDate}&limit=20`)
+        .then(response => {
+        console.log('Response:', response);
+        return response.text(); // JSON 대신 plain text로 확인해 보기
+    })
+        .then(data => {
+        console.log('Data received:', data);
+    })
+        .catch(err => console.error('Error occurred:', err));
+
     function loadPreviousMessages() {
         const chatMessages = document.getElementById('chatMessages');
         const previousHeight = chatMessages.scrollHeight;
 
-        // AJAX 요청을 통해 이전 메시지 불러오기
+        // fetch 요청을 통해 이전 메시지를 불러오기
         fetch(`/chat/messages/previous?roomId=${roomId}&before=${oldestMessageDate}&limit=20`)
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => {
+            // fetch 응답이 잘 왔는지 체크
+            console.log('Fetch response status:', response.status);
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+        })
+            .then((data) => {
+            console.log('Data received:', data); // 받은 데이터 출력
             if (data.length > 0) {
                 data.forEach(function (message) {
                     const newMessage = document.createElement('div');
-
-                    // 메시지 발신자에 따라 스타일 설정
                     newMessage.className = message.sender === currentUserName ? 'message sent' : 'message received';
 
-                    // 시간 포맷팅
+                    // 메시지 날짜 포맷팅
                     const messageDate = new Date(message.sendDate);
                     const formattedTime = messageDate.toLocaleTimeString('ko-KR', {
                         hour: '2-digit',
@@ -256,16 +209,14 @@
 
                 // 이전 메시지를 로드한 후 스크롤 위치를 유지
                 chatMessages.scrollTop = chatMessages.scrollHeight - previousHeight;
+            } else {
+                console.log('No previous messages found.');
             }
         })
-            .catch(err => console.error('이전 메시지를 가져오는 중 오류 발생:', err));
+            .catch((err) => console.error('Error loading previous messages:', err));
     }
 
-    // DOM이 로드된 후 이벤트 리스너와 연결 설정
-    document.addEventListener('DOMContentLoaded', function() {
-        connect(); // 웹소켓 연결
-        setupEventListeners(); // 이벤트 리스너 설정
-    });
+
 
     // 이벤트 리스너 설정 함수
     function setupEventListeners() {
@@ -273,32 +224,35 @@
         const messageInput = document.getElementById('messageInput');
         const chatMessages = document.getElementById('chatMessages');
 
-        // 전송 버튼 클릭 시 메시지 전송
         sendButton.addEventListener('click', sendMessage);
-        // Enter 키를 누르면 메시지 전송
         messageInput.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 sendMessage();
             }
         });
 
-        // 입력 필드 내용에 따라 전송 버튼 활성화/비활성화
         messageInput.addEventListener('input', function() {
             sendButton.disabled = this.value.trim() === '';
         });
 
-        // 처음 로드 시 스크롤을 가장 아래로 이동
         chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        // 스크롤이 상단에 도달했을 때 이전 메시지 로드
         chatMessages.addEventListener('scroll', function() {
             if (chatMessages.scrollTop === 0) {
                 loadPreviousMessages();
             }
         });
     }
+
+    // DOM이 로드된 후 이벤트 리스너와 연결 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        connect();
+        loadPreviousMessages();
+        setupEventListeners();
+    });
 </script>
 
 
+
+<!-- chatRoom -->
 </body>
 </html>

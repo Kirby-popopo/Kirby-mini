@@ -1,167 +1,94 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>채팅방 목록</title>
     <style>
+        /* 기본 스타일 정의 */
         body, html {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: Arial, sans-serif;
             height: 100%;
             overflow: hidden;
         }
-
         .app-container {
             display: flex;
             width: 100%;
             height: 100vh;
         }
-
         .sidebar {
             width: 300px;
             background-color: #121212;
-            border-right: 1px solid #262626;
             overflow-y: auto;
             flex-shrink: 0;
         }
-
-        .message-sidebar {
-            padding: 20px;
-        }
-
         .message-list {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
-
         .message-item {
             padding: 15px;
-            border-bottom: 1px solid #333;
-            display: flex;
-            align-items: center;
             cursor: pointer;
-            transition: background-color 0.3s;
             color: #fff;
         }
-
-        .message-item:hover, .message-item:focus {
+        .message-item:hover {
             background-color: #1e1e1e;
-            outline: none;
         }
-
         .main-content {
-            flex-grow: 1; /* Change to flex-grow to allow it to expand */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             background-color: #000;
-            overflow: hidden;
-            min-width: 0; /* Ensures it takes up available space properly */
-        }
-
-        .chat-header {
-            padding: 15px;
-            border-bottom: 1px solid #333;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .input-area {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #333;
-        }
-
-        #messageInput {
-            flex-grow: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 20px;
-            background-color: #262626;
-            color: #fff;
-            margin-right: 10px;
-        }
-
-        #sendButton {
-            background-color: #0095f6;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        #sendButton:disabled {
-            background-color: #555;
-        }
-
-        .message {
-            max-width: 70%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 20px;
-            color: #fff;
-        }
-
-        #chatMessages {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .sent {
-            align-self: flex-end;
-            background-color: #0095f6;
-        }
-
-        .received {
-            align-self: flex-start;
-            background-color: #333;
         }
     </style>
 </head>
 <body>
 <div class="app-container">
     <div class="sidebar">
-        <div class="message-sidebar">
-            <h2 style="color: #fff;">채팅방 리스트</h2>
-            <ul id="roomList" class="message-list"></ul>
-            <button id="createRoomBtn" style="width: 100%; margin-top: 20px;">채팅방 생성</button>
-        </div>
+        <ul id="roomList" class="message-list"></ul>
+        <button id="createRoomBtn">채팅방 생성</button>
     </div>
     <div class="main-content">
-        <div class="chat-header" id="chatRoomHeader">
-            <div id="chatRoomTitle">채팅방 이름</div>
-        </div>
-        <div class="chat-area" id="chatArea">
-            <div id="chatMessages"></div>
-        </div>
-<!--        <div class="input-area">-->
-<!--            <input type="text" id="messageInput" placeholder="메시지를 입력하세요" />-->
-<!--            <button id="sendButton" disabled>전송</button>-->
-<!--        </div>-->
+        <iframe id="chatRoomFrame" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
-    let stompClient = null;
-    let currentRoomId = null;
-    const currentUserName = 'User-' + Math.floor(Math.random() * 10000);
-    let oldestMessageDate = new Date().toISOString();
-    let isInitialLoad = true;
+    // 채팅방 리스트 불러오기 함수
+    function loadChatRooms() {
+        fetch('/chat/rooms')
+            .then(response => response.json())
+            .then(data => {
+            const chatRoomList = document.getElementById('roomList');
+            chatRoomList.innerHTML = ''; // 기존 리스트 초기화
+
+            data.forEach(room => {
+                const roomItem = document.createElement('li');
+                roomItem.classList.add('message-item');
+                roomItem.textContent = room.room_name;
+                roomItem.addEventListener('click', () => {
+                    enterRoom(room.roomId);
+                });
+                chatRoomList.appendChild(roomItem);
+            });
+        })
+            .catch(error => console.error('Error loading chat rooms:', error));
+    }
+
+    // roomList.html에서 채팅방 클릭 시
+    function enterRoom(roomId) {
+        const chatRoomFrame = document.getElementById('chatRoomFrame');
+        if (chatRoomFrame) {
+            chatRoomFrame.src = `http://localhost:8090/chatRoom/${roomId}`;
+        } else {
+            console.error('Chat room frame not found.');
+        }
+    }
 
     // 채팅방 생성 함수
     function createRoom() {
@@ -185,190 +112,19 @@
         }
     }
 
-    // 채팅방 입장 함수
-    function enterRoom(roomId) {
-        currentRoomId = roomId;
-        fetch(`/chatRoom/${roomId}`)
-            .then(response => {
-            if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.statusText}`);
-            }
-            return response.text();
-        })
-            .then(html => {
-            document.querySelector('.chat-area').innerHTML = html;
-            connect(); // 웹소켓 연결
-            setupEventListeners(); // 이벤트 리스너 설정
-        })
-            .catch(error => {
-            console.error('Error loading chat room:', error);
-        });
-    }
-
-    // 웹소켓 연결 및 STOMP 클라이언트 설정
-    function connect() {
-        if (!currentRoomId) {
-            console.error('Error: currentRoomId is not defined.');
-            return;
-        }
-
-        const socket = new SockJS('/ws-stomp');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame + ' as ' + currentUserName);
-
-            // 채팅방 구독
-            stompClient.subscribe('/topic/chatRoom/' + currentRoomId, function (message) {
-                const receivedMessage = JSON.parse(message.body);
-                showMessage(receivedMessage); // 수신된 메시지 화면에 표시
-            });
-        }, function (error) {
-            console.error('STOMP error: ' + error);
-        });
-    }
-    // 메시지를 화면에 표시하는 함수
-    function showMessage(message) {
-        const chatMessages = document.getElementById('chatMessages');
-        const atBottom = chatMessages.scrollTop + chatMessages.clientHeight >= chatMessages.scrollHeight - 1;
-
-        const messageElement = document.createElement('div');
-        messageElement.className = message.sender === currentUserName ? 'message sent' : 'message received';
-
-        const messageDate = new Date(message.sendDate);
-        const formattedTime = messageDate.toLocaleTimeString('ko-KR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-
-        messageElement.innerHTML = `<strong>${message.sender}</strong>: ${message.message} <br><small>${formattedTime}</small>`;
-        chatMessages.appendChild(messageElement);
-
-        if (isInitialLoad || atBottom) {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            isInitialLoad = false;
-        }
-    }
-
-    // 채팅방 리스트 불러오기 함수
-    function loadChatRooms() {
-        fetch('/chat/rooms')
-            .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-        })
-            .then(data => {
-            if (Array.isArray(data)) {
-                const chatRoomList = document.getElementById('roomList');
-                chatRoomList.innerHTML = '';
-
-                data.forEach(room => {
-                    const roomItem = document.createElement('li');
-                    roomItem.classList.add('message-item');
-                    roomItem.setAttribute('data-room-id', room.roomId);
-                    roomItem.textContent = room.room_name;
-
-                    roomItem.addEventListener('click', () => enterRoom(room.roomId));
-
-                    chatRoomList.appendChild(roomItem);
-                });
-            } else {
-                console.error('Error: Expected an array but received:', data);
-            }
-        })
-            .catch(error => console.error('Error loading chat rooms:', error));
-    }
-    // 메시지 전송 함수
-    function sendMessage() {
-        const messageContent = document.getElementById('messageInput').value;
-
-        if (messageContent.trim() !== "" && stompClient && stompClient.connected) {
-            const message = {
-                type: 'TALK',
-                sender: currentUserName,
-                message: messageContent,
-                roomId: currentRoomId,
-                sendDate: new Date().toISOString()
-            };
-            stompClient.send("/app/chat/message", {}, JSON.stringify(message));
-            document.getElementById('messageInput').value = '';
-        } else {
-            console.error("웹소켓이 연결되지 않았습니다.");
-        }
-    }
-    // 이전 메시지를 불러오는 함수
-    function loadPreviousMessages() {
-        if (!currentRoomId) return;
-
-        const chatMessages = document.getElementById('chatMessages');
-        const previousHeight = chatMessages.scrollHeight;
-
-        fetch(`/chat/messages/previous?roomId=${currentRoomId}&before=${oldestMessageDate}&limit=20`)
-            .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-            }
-            return response.json();
-        })
-            .then(data => {
-            if (data.length > 0) {
-                data.forEach(function (message) {
-                    const newMessage = document.createElement('div');
-                    newMessage.className = message.sender === currentUserName ? 'message sent' : 'message received';
-
-                    const messageDate = new Date(message.sendDate);
-                    const formattedTime = messageDate.toLocaleTimeString('ko-KR', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
-                    });
-
-                    newMessage.innerHTML = `<strong>${message.sender}</strong>: ${message.message} <br><small>${formattedTime}</small>`;
-                    chatMessages.prepend(newMessage);
-
-                    if (!oldestMessageDate || messageDate < new Date(oldestMessageDate)) {
-                        oldestMessageDate = message.sendDate;
-                    }
-                });
-
-                chatMessages.scrollTop = chatMessages.scrollHeight - previousHeight;
-            }
-        })
-            .catch(err => console.error('Error loading previous messages:', err));
-    }
-
+    // DOM이 로드된 후 이벤트 리스너와 필요한 요소를 설정
     document.addEventListener('DOMContentLoaded', function() {
         loadChatRooms(); // 채팅방 리스트 불러오기
-        document.getElementById('createRoomBtn').addEventListener('click', createRoom);
-        setupEventListeners(); // 이벤트 리스너 설정
+
+        // 채팅방 생성 버튼에 이벤트 리스너 추가
+        const createRoomBtn = document.getElementById('createRoomBtn');
+        if (createRoomBtn) {
+            createRoomBtn.addEventListener('click', createRoom);
+        } else {
+            console.error("채팅방 생성 버튼을 찾을 수 없습니다.");
+        }
     });
-
-    function setupEventListeners() {
-        const sendButton = document.getElementById('sendButton');
-        const messageInput = document.getElementById('messageInput');
-        const chatMessages = document.getElementById('chatMessages');
-
-        sendButton.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        messageInput.addEventListener('input', function() {
-            sendButton.disabled = this.value.trim() === '';
-        });
-
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        chatMessages.addEventListener('scroll', function() {
-            if (chatMessages.scrollTop === 0) {
-                loadPreviousMessages();
-            }
-        });
-    }
 </script>
 </body>
-<!--아직변경 안됨 ㅇㅇ-->
+<!--roomList-->
 </html>
