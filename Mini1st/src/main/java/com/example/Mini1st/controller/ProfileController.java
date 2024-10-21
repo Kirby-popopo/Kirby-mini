@@ -63,7 +63,6 @@ public class ProfileController {
                 테스트 영역
          **********************************************************/
 
-        ProfileDummyDTO test = new ProfileDummyDTO();
         UserDTO loginUser = (UserDTO)session.getAttribute("loginMember");
 
         model.addAttribute("loginMember", loginUser);

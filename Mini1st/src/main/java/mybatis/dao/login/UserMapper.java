@@ -30,7 +30,7 @@ public interface UserMapper {
     void deleteUser(String userId);
 
     // 로그인 인증
-    @Select("SELECT user_id, user_pw FROM users WHERE user_id = #{userId} AND user_pw = #{userPw}")
+    @Select("SELECT user_id, email, name, nickname, phone_number, last_login, profile_image, description FROM users WHERE user_id = #{userId} AND user_pw = #{userPw}")
     UserDTO getUserByIdAndPw(@Param("userId") String userId, @Param("userPw") String userPw);
 
     // 아이디 중복체크
