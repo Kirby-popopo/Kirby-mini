@@ -1,92 +1,130 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인스타그램 메시지</title>
-
-    <!-- 사이드바 css -->
-    <link rel="stylesheet" href="/sidebar/sidebar.css">
-    <!-- 메뉴 css -->
-    <link rel="stylesheet" href="/sidebar/menu.css">
-    <!-- 공통 베이스 css -->
-    <link rel="stylesheet" href="/base.css">
-    <!-- messagePage css -->
-    <link rel="stylesheet" href="/message/messagePage.css">
-
-    <script>
-        function createRoom() {
-            const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
-            if (roomName && roomName.trim() !== "") {
-                fetch('/roomAdd', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'room_name=' + encodeURIComponent(roomName)
-                }).then(response => {
-                    if (response.ok) {
-                        window.location.reload();
-                    } else {
-                        alert('채팅방 생성에 실패했습니다.');
-                    }
-                });
-            } else {
-                alert("채팅방 이름은 필수 입력입니다.");
-            }
+    <title>채팅방 목록</title>
+    <style>
+        /* 기본 스타일 정의 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+            overflow: hidden;
         }
-
-        function enterRoom(roomId) {
-            window.location.href = '/chatRoom/' + roomId;
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
         }
-    </script>
+        .sidebar {
+            width: 300px;
+            background-color: #121212;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .message-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .message-item {
+            padding: 15px;
+            cursor: pointer;
+            color: #fff;
+        }
+        .message-item:hover {
+            background-color: #1e1e1e;
+        }
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #000;
+        }
+    </style>
 </head>
 <body>
-<!-- sidebar html 불러오기 -->
-<div id="sidebar-container"></div>
-<script>
-    fetch('/sidebar/sidebar.html')
-        .then(response => response.text())
-        .then(data => {
-        document.getElementById('sidebar-container').innerHTML = data;
-    })
-        .catch(error => console.error('Error loading sidebar:', error));
-</script>
-<!-- sidebar html 불러오기 끝 -->
-
-<div class="main-content">
-    <div class="container">
-        <div class="message-sidebar">
-            <div class="header">
-                <div class="message-header">
-                    <h2 class="message-title">채팅방 리스트</h2>
-                </div>
-            </div>
-            <div th:if="${roomList != null}">
-                <ul class="message-list">
-                    <li class="message-item" th:each="room : ${roomList}" th:onclick="'enterRoom(' + ${room.roomId} + ')'" style="cursor: pointer;">
-                        <div class="message-content">
-                            <div class="username" th:text="${room.room_name}"></div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div th:if="${roomList == null}">
-                <p>현재 생성된 채팅방이 없습니다.</p>
-            </div>
-            <button onclick="createRoom()">채팅방 생성</button>
-        </div>
-        <div class="chat-area">
-            <div id="default-content" class="chat-area">
-                <p>메시지를 선택하거나 새로운 메시지를 보내세요</p>
-                <button class="new-message-btn" id="newMessageBtn">새 메시지</button>
-            </div>
-            <iframe id="chat-frame" src="messageChat.html" frameborder="0" title="채팅 창"></iframe>
-        </div>
+<div class="app-container">
+    <div class="sidebar">
+        <ul id="roomList" class="message-list"></ul>
+        <button id="createRoomBtn">채팅방 생성</button>
+    </div>
+    <div class="main-content">
+        <iframe id="chatRoomFrame" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
 </div>
 
-<!-- Rest of the HTML content remains unchanged -->
+<script src="https://cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    // 채팅방 리스트 불러오기 함수
+    function loadChatRooms() {
+        fetch('/chat/rooms')
+            .then(response => response.json())
+            .then(data => {
+            const chatRoomList = document.getElementById('roomList');
+            chatRoomList.innerHTML = ''; // 기존 리스트 초기화
 
+            data.forEach(room => {
+                const roomItem = document.createElement('li');
+                roomItem.classList.add('message-item');
+                roomItem.textContent = room.room_name;
+                roomItem.addEventListener('click', () => {
+                    enterRoom(room.roomId);
+                });
+                chatRoomList.appendChild(roomItem);
+            });
+        })
+            .catch(error => console.error('Error loading chat rooms:', error));
+    }
+
+    // roomList.html에서 채팅방 클릭 시
+    function enterRoom(roomId) {
+        const chatRoomFrame = document.getElementById('chatRoomFrame');
+        if (chatRoomFrame) {
+            chatRoomFrame.src = `http://localhost:8090/chatRoom/${roomId}`;
+        } else {
+            console.error('Chat room frame not found.');
+        }
+    }
+
+    // 채팅방 생성 함수
+    function createRoom() {
+        const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
+        if (roomName && roomName.trim() !== "") {
+            fetch('/roomAdd', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'room_name=' + encodeURIComponent(roomName)
+            }).then(response => {
+                if (response.ok) {
+                    loadChatRooms();
+                } else {
+                    alert('채팅방 생성에 실패했습니다.');
+                }
+            });
+        } else {
+            alert("채팅방 이름은 필수 입력입니다.");
+        }
+    }
+
+    // DOM이 로드된 후 이벤트 리스너와 필요한 요소를 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        loadChatRooms(); // 채팅방 리스트 불러오기
+
+        // 채팅방 생성 버튼에 이벤트 리스너 추가
+        const createRoomBtn = document.getElementById('createRoomBtn');
+        if (createRoomBtn) {
+            createRoomBtn.addEventListener('click', createRoom);
+        } else {
+            console.error("채팅방 생성 버튼을 찾을 수 없습니다.");
+        }
+    });
+</script>
 </body>
+<!--roomList-->
 </html>

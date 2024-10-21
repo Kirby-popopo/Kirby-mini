@@ -1,0 +1,35 @@
+.sidebar {
+    width: 220px;
+    background-color: #000;
+    color: #fff;
+    height: 100vh;
+    padding: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+}
+
+.sidebar-item:hover {
+    background-color: #1e1e1e;
+}
+
+.sidebar-item img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.sidebar-text {
+    font-size: 14px;
+}

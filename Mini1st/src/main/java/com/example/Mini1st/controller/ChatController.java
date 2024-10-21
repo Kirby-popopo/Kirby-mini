@@ -36,6 +36,13 @@ public class ChatController {
     public String roomList(Model model) {
         List<ChatRoom> roomList = chatService.findAllRoom();
         model.addAttribute("roomList", roomList);
+
+        // 특정 채팅방 ID로 chatRoom 객체를 가져옵니다.
+        if (!roomList.isEmpty()) {
+            ChatRoom chatRoom = chatService.getChatRoomById(roomList.get(0).getRoomId());
+            model.addAttribute("chatRoom", chatRoom);
+        }
+
         return "chat/roomList";
     }
 
@@ -117,4 +124,14 @@ public class ChatController {
         return ResponseEntity.ok(messages);
     }
 
+    /**
+     * 모든 채팅방을 JSON 형태로 반환하는 API
+     *
+     * @return 채팅방 리스트 (JSON 형태)
+     */
+    @GetMapping("/chat/rooms")
+    public ResponseEntity<List<ChatRoom>> getAllChatRooms() {
+        List<ChatRoom> roomList = chatService.findAllRoom();
+        return ResponseEntity.ok(roomList);
+    }
 }
