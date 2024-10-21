@@ -2,6 +2,7 @@ package com.example.Mini1st.controller;
 
 import com.example.Mini1st.dao.login.UserDTO;
 import com.example.Mini1st.dao.profile.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,7 @@ public class ProfileController {
     ProfileMapper profileMapper;
 
     @GetMapping(value = "profile/{id}")
-    public String showProfilePageUser(@PathVariable String id, Model model) {
+    public String showProfilePageUser(@PathVariable String id, Model model, HttpSession session) {
          try {
              // 유저 테이블 - 유저 정보 가져오기
              UserDTO findUser = profileMapper.findUser(id);
@@ -30,6 +31,16 @@ public class ProfileController {
 
              // 팔로우 테이블 - 내가 팔로우 하고 있는 유저 가져오기
              List<FollowingDTO> findFollowing = profileMapper.findFollowingUser(id);
+
+             UserDTO loginUser = (UserDTO)session.getAttribute("loginMember");
+             model.addAttribute("isFollow", false);
+             if (!loginUser.getUser_id().equals(id)){
+                 for (FollowDTO followingUser : findFollow) {
+                     if(followingUser.getFollower_id().equals(loginUser.getUser_id())){
+                         model.addAttribute("isFollow", true);
+                     }
+                 }
+             }
 
              model.addAttribute("profile", findUser);
              model.addAttribute("posts", findUserPost);
