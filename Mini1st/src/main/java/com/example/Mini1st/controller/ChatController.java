@@ -35,9 +35,14 @@ public class ChatController {
      * @return 채팅방 리스트 화면 (HTML 페이지)
      */
     @GetMapping("/roomList")
-    public String roomList(Model model) {
+    public String roomList(Model model, HttpSession session) {
         List<ChatRoom> roomList = chatService.findAllRoom();
         model.addAttribute("roomList", roomList);
+
+        UserDTO loginMember = (UserDTO) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/login"; // 세션에 로그인 정보가 없으면 로그인 페이지로 이동
+        }
 
         // 특정 채팅방 ID로 chatRoom 객체를 가져옵니다.
         if (!roomList.isEmpty()) {

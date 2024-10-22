@@ -104,6 +104,60 @@
         #default-content {
             display: none;
         }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #262626;
+        }
+        .chat-info {
+            margin-left: 15px;
+        }
+        .chat-username {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .chat-status {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+        .chat-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #262626;
+        }
+        .chat-top-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .chat-top-username {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .profile-view-btn {
+            background-color: #262626;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .profile-view-btn:hover {
+            background-color: #363636;
+        }
+        .small-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -112,8 +166,22 @@
         <p>메시지를 선택하거나 새로운 메시지를 보내세요</p>
         <button class="new-message-btn" id="newMessageBtn">새 메시지</button>
     </div>
+    <div class="chat-header">
+        <img src="../img/안선생님.png" alt="상대방 이름" class="small-avatar">
+        <div class="chat-info">
+            <div class="chat-username" th:text="${name}">상대방 이름</div><!-- 여기 -->
+            <div class="chat-status">Instagram</div>
+        </div>
+    </div>
 
-    <div id="chatMessages" class="chat-area"></div>
+    <div id="chatMessages" class="chat-area">
+        <div class="chat-top">
+            <img src="../img/안선생님.png" alt="상대방 이름" class="chat-top-avatar">
+            <div class="chat-top-username" th:text="${name}">상대방 이름</div> <!-- 여기 -->
+            <button class="profile-view-btn">프로필 보기</button>
+        </div>
+    </div>
+
     <div class="input-area">
         <input type="text" id="messageInput" placeholder="메시지를 입력하세요">
         <button id="sendButton">전송</button>
@@ -261,10 +329,12 @@
         });
     }
 
+
     // DOM이 로드된 후 이벤트 리스너와 연결 설정
     document.addEventListener('DOMContentLoaded', function() {
         // 기본 메시지 숨김 처리 (기본적으로 숨겨두기)
         const defaultContent = document.getElementById('default-content');
+
         if (defaultContent) {
             defaultContent.style.display = 'none';
         }
