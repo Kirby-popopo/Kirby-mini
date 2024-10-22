@@ -185,7 +185,22 @@
   }
 
   function finalSubmit() {
-      location.href = "/";
+      // 전송 방식(form) 을 직접 생성하여 전송
+      const form = document.createElement('form');
+      form.setAttribute('method', 'post');
+      form.setAttribute('action', '/posts');
+
+      let contents_data = document.getElementById('contentArea');
+      const data1 = document.createElement('input');// 태그를 생성
+      data1.setAttribute('name', 'content_box');
+      data1.setAttribute('value', contents_data.value);
+
+      const data2 = document.createElement('input');// 태그를 생성
+      data2.setAttribute('name', 'base64Image');
+      data2.setAttribute('value', contents_data.value);
+
+      form.submit();
+
   }
 
   function resetModal() {

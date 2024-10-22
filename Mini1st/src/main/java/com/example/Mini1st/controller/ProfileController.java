@@ -57,7 +57,7 @@ public class ProfileController {
         return "profilePage";
     }
 
-    @PostMapping("/profile")
+    @GetMapping("/profile")
     public String show(Model model, HttpSession session) {
         /***********************************************************
                 테스트 영역
