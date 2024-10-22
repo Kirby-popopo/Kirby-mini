@@ -1,8 +1,10 @@
 package com.example.Mini1st.controller;
 
+import com.example.Mini1st.dao.login.UserDTO;
 import com.example.Mini1st.domain.ChatMessage;
 import com.example.Mini1st.domain.ChatRoom;
 import com.example.Mini1st.service.ChatService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -85,12 +87,22 @@ public class ChatController {
      * @return 채팅방 화면 (HTML 페이지)
      */
     @GetMapping("/chatRoom/{roomId}")
-    public String enterRoom(@PathVariable int roomId, Model model) {
+    public String enterRoom(@PathVariable int roomId, Model model, HttpSession session) {
         ChatRoom chatRoom = chatService.getChatRoomById(roomId);
         List<ChatMessage> messages = chatService.getRecentMessagesByRoomId(roomId); // 최근 메시지만 로드
 
+        UserDTO loginMember = (UserDTO) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return "redirect:/login"; // 세션에 로그인 정보가 없으면 로그인 페이지로 이동
+        }
+        String name = loginMember.getName();
+
         model.addAttribute("chatRoom", chatRoom);
         model.addAttribute("messages", messages);
+        model.addAttribute("name", name);
+
+        System.out.println("채팅방 입장 : "+ name);
+
         return "chat/chatRoom";
     }
 
