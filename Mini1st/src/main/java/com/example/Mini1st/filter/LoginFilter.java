@@ -10,13 +10,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+
 import java.io.IOException;
+
+
 @WebFilter(urlPatterns = "/*")
 public class LoginFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
@@ -31,8 +35,9 @@ public class LoginFilter implements Filter {
 
         // 세션에서 로그인 여부 확인 (로그인 안된 경우 로그인 페이지로)
         HttpSession session = httpRequest.getSession(false);
-        if(session == null || session.getAttribute("user") == null){
+        if(session == null || session.getAttribute("loginMember") == null){
             ((HttpServletResponse) response).sendRedirect(httpRequest.getContextPath() + "/login");
+            return;
         }
         chain.doFilter(request, response);
     }
