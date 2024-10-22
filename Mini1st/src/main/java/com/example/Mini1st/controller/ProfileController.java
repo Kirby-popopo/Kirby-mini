@@ -104,4 +104,13 @@ public class ProfileController {
         return "redirect:/profile/" + loginUser.getUser_id();
     }
 
+    @GetMapping("/getFollowerModalContent")
+    public String getFollowerModalContent(Model model) {
+        return "followerModal :: modal-contents";
+    }
+
+    @GetMapping("/getFollowingModalContent")
+    public String getFollowingModalContent(Model model) {
+        return "followingModal :: modal-contents";
+    }
 }
