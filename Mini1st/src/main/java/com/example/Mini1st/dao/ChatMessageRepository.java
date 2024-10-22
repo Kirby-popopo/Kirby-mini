@@ -8,7 +8,6 @@ import java.util.List;
 @Mapper
 public interface ChatMessageRepository{
 
-    @Select("SELECT * FROM ChatMessage WHERE room_pk = #{roomId} ORDER BY sendDate ASC")
+    @Select("SELECT * FROM ChatMessage WHERE roomId = #{roomId} ORDER BY sendDate ASC")
     List<ChatMessage> findMessagesByRoomId(int roomId);
-
 }

@@ -1,8 +1,10 @@
 package com.example.Mini1st.dao.profile;
 
+import com.example.Mini1st.dao.follow.FollowDTO;
 import com.example.Mini1st.dao.login.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public interface ProfileMapper {
      * @return : 내가 친구추가한 유저들
      */
     @Select("select following_id from follows where follower_id = #{id}")
-    public List<FollowingDTO> findFollowingUser(String id);
+    public List<FollowDTO> findFollowingUser(String id);
 
     /**
      * 나를 팔로우 하고 있는 유저를 찾아서 반환합니다.
@@ -36,4 +38,7 @@ public interface ProfileMapper {
      */
     @Select("select follower_id from follows where following_id = #{id}")
     public List<FollowDTO> findFollowUser(String id);
+
+    @Update("update users set gender = #{gender}, description = #{description} where user_id = #{user_id}")
+    public boolean updateUserProfile(UserDTO user);
 }

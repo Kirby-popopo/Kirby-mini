@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>채팅방 목록</title>
     <style>
-        /* 기본 스타일 정의 */
+        /* 기존 스타일 정의 */
         body, html {
             margin: 0;
             padding: 0;
@@ -41,90 +41,345 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
             background-color: #000;
+            color: #8e8e8e;
+            position: relative;
+        }
+        .default-message {
+            text-align: center;
+            font-size: 16px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        #chatRoomFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+        }
+        .new-message-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .new-message-btn:hover {
+            background-color: #0074cc;
+        }
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #1c1c1c;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* 그림자 추가 */
+            padding: 20px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        .modal-title {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: #a8a8a8;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-body {
+            padding: 10px 0;
+            min-height: 120px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .input-label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e8e8e;
+            font-size: 14px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .input-field:focus + .input-label,
+        .input-field:not(:placeholder-shown) + .input-label {
+            top: -5px;
+            font-size: 12px;
+            background-color: #1c1c1c;
+            padding: 0 5px;
+            color: #0095f6;
+        }
+        .modal-footer {
+            padding: 10px 0;
+            border-top: 1px solid #333;
+            text-align: center;
+        }
+        .search-result {
+            color: #a8a8a8;
+            font-size: 14px;
+            margin-top: 8px;
+            padding: 0 16px;
+        }
+        .chat-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-btn:hover,
+        .chat-btn:focus {
+            background-color: #0074cc;
+            outline: none;
+        }
+
+        .chat-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
+
 <div class="app-container">
     <div class="sidebar">
         <ul id="roomList" class="message-list"></ul>
-        <button id="createRoomBtn">채팅방 생성</button>
+<!--        <button id="createRoomBtn">채팅방 생성</button>-->
     </div>
-    <div class="main-content">
-        <iframe id="chatRoomFrame" style="width: 100%; height: 100%; border: none;"></iframe>
+    <div class="main-content" id="mainContent">
+        <div class="default-message" id="defaultMessage">
+            <p>메시지를 선택하거나 새로운 메시지를 보내세요</p>
+            <button class="new-message-btn" id="newMessageBtn">새 메시지</button>
+        </div>
+        <div id="newMessageModal" class="modal" aria-labelledby="modalTitle" aria-modal="true" role="dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close-btn" aria-label="닫기">&times;</button>
+                    <h2 class="modal-title">새로운 메시지</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <input type="text" id="recipient" class="input-field" placeholder=" " aria-label="받는 사람">
+                        <label for="recipient" class="input-label">받는 사람:</label>
+                    </div>
+                    <p id="searchResult" class="search-result" aria-live="polite"></p>
+                </div>
+                <div class="modal-footer">
+                    <button id="chatBtn" class="chat-btn" disabled>채팅</button> <!--chatBtn--> <!--createRoomBtn-->
+                </div>
+            </div>
+        </div>
+        <iframe id="chatRoomFrame" style="width: 100%; height: 100%; border: none; display: none;"></iframe>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
-    // 채팅방 리스트 불러오기 함수
-    function loadChatRooms() {
-        fetch('/chat/rooms')
-            .then(response => response.json())
-            .then(data => {
-            const chatRoomList = document.getElementById('roomList');
-            chatRoomList.innerHTML = ''; // 기존 리스트 초기화
-
-            data.forEach(room => {
-                const roomItem = document.createElement('li');
-                roomItem.classList.add('message-item');
-                roomItem.textContent = room.room_name;
-                roomItem.addEventListener('click', () => {
-                    enterRoom(room.roomId);
-                });
-                chatRoomList.appendChild(roomItem);
-            });
-        })
-            .catch(error => console.error('Error loading chat rooms:', error));
-    }
-
-    // roomList.html에서 채팅방 클릭 시
-    function enterRoom(roomId) {
-        const chatRoomFrame = document.getElementById('chatRoomFrame');
-        if (chatRoomFrame) {
-            chatRoomFrame.src = `http://localhost:8090/chatRoom/${roomId}`;
-        } else {
-            console.error('Chat room frame not found.');
-        }
-    }
-
-    // 채팅방 생성 함수
-    function createRoom() {
-        const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
-        if (roomName && roomName.trim() !== "") {
-            fetch('/roomAdd', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'room_name=' + encodeURIComponent(roomName)
-            }).then(response => {
-                if (response.ok) {
-                    loadChatRooms();
-                } else {
-                    alert('채팅방 생성에 실패했습니다.');
-                }
-            });
-        } else {
-            alert("채팅방 이름은 필수 입력입니다.");
-        }
-    }
-
-    // DOM이 로드된 후 이벤트 리스너와 필요한 요소를 설정
     document.addEventListener('DOMContentLoaded', function() {
+
+        const newMessageBtn = document.getElementById('newMessageBtn');
+        const modal = document.getElementById('newMessageModal');
+        const closeBtn = document.querySelector('.close-btn');
+
+        const chatBtn = document.getElementById('chatBtn'); // 해당 버튼을 사용
+
+        const recipientInput = document.getElementById('recipient');
+        const searchResult = document.getElementById('searchResult');
+
+        // 모달 열기
+        newMessageBtn.addEventListener('click', function() {
+            modal.style.display = 'flex';
+            recipientInput.focus();
+        });
+
+        // 모달 닫기
+        closeBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('click', function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        });
+
+        function closeModal() {
+            modal.style.display = 'none';
+            recipientInput.value = '';
+            searchResult.textContent = '';
+            chatBtn.disabled = true;
+        }
+
+        recipientInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length > 0) {
+                searchResult.textContent = '계정을 찾을 수 없습니다.';
+                chatBtn.disabled = true;
+            } else {
+                searchResult.textContent = '';
+                chatBtn.disabled = true;
+            }
+        });
+
+        chatBtn.addEventListener('click', function() {
+            const recipient = recipientInput.value.trim();
+            if (recipient) {
+                createRoom(recipient);
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                closeModal();
+            }
+        });
+
+        // 채팅방 리스트 불러오기 함수
+        function loadChatRooms() {
+            fetch('/chat/rooms')
+                .then(response => response.json())
+                .then(data => {
+                const chatRoomList = document.getElementById('roomList');
+                chatRoomList.innerHTML = ''; // 기존 리스트 초기화
+
+                data.forEach(room => {
+                    const roomItem = document.createElement('li');
+                    roomItem.classList.add('message-item');
+                    roomItem.textContent = room.room_name;
+                    roomItem.addEventListener('click', () => {
+                        enterRoom(room.roomId);
+                    });
+                    chatRoomList.appendChild(roomItem);
+                });
+            })
+                .catch(error => console.error('Error loading chat rooms:', error));
+        }
+
+        // 채팅방 클릭 시
+        function enterRoom(roomId) {
+            const chatRoomFrame = document.getElementById('chatRoomFrame');
+            const defaultMessage = document.getElementById('defaultMessage');
+
+            // 기본 메시지 요소가 있는지 확인하고 숨기기
+            if (defaultMessage) {
+                defaultMessage.style.display = 'none';
+            }
+
+            // iframe을 표시하고 채팅방 로드
+            if (chatRoomFrame) {
+                chatRoomFrame.style.display = 'block';
+                chatRoomFrame.src = `/chatRoom/${roomId}`;
+            } else {
+                console.error('Chat room frame not found.');
+            }
+        }
+
+
+        // 채팅방 생성 함수 /*recipient 해당 이름으로 채팅방 이름 받아온다*/
+        function createRoom(recipient) {
+            const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
+            if (recipient && recipient.trim() !== "") {
+                fetch('/roomAdd', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'room_name=' + encodeURIComponent(recipient)
+                }).then(response => {
+                    if (response.ok) {
+                        loadChatRooms();
+                    } else {
+                        alert('채팅방 생성에 실패했습니다.');
+                    }
+                });
+            } else {
+                alert("채팅방 이름은 필수 입력입니다.");
+            }
+        }
+
+        // DOM이 로드된 후 이벤트 리스너와 필요한 요소를 설정
         loadChatRooms(); // 채팅방 리스트 불러오기
 
-        // 채팅방 생성 버튼에 이벤트 리스너 추가
+        /*// 채팅방 생성 버튼에 이벤트 리스너 추가
         const createRoomBtn = document.getElementById('createRoomBtn');
         if (createRoomBtn) {
             createRoomBtn.addEventListener('click', createRoom);
         } else {
             console.error("채팅방 생성 버튼을 찾을 수 없습니다.");
-        }
+        }*/
+
+        /*// 새 메시지 버튼 클릭 시 이벤트 리스너 추가
+        const newMessageBtn = document.getElementById('newMessageBtn');
+        if (newMessageBtn) {
+            newMessageBtn.addEventListener('click', function() {
+                alert('새 메시지 모달을 여는 로직을 추가하세요.');
+            });
+        } else {
+            console.error('새 메시지 버튼을 찾을 수 없습니다.');
+        }*/
+
+        console.log(document.getElementById('defaultMessage'));
     });
 </script>
+
+
 </body>
-<!--roomList-->
 </html>
