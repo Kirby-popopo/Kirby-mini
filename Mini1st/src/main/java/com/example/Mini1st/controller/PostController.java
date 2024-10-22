@@ -1,8 +1,8 @@
 package com.example.Mini1st.controller;
 import com.example.Mini1st.dao.PostDTO;
 import com.example.Mini1st.dao.login.UserDTO;
-import com.example.Mini1st.dao.mapper.PostMapper;
 import jakarta.servlet.http.HttpSession;
+import com.example.Mini1st.dao.mapper.PostMapper;
 import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Profiles;
