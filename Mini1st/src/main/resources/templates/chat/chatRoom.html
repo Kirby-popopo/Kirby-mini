@@ -265,11 +265,17 @@
         }
     }
 
+    let initialLoad = true; // 처음 로드인지 여부를 저장하는 변수
+
     // showMessage 함수 수정
     function showMessage(message) {
         const chatMessages = document.getElementById('chatMessages');
         const messageElement = createMessageElement(message);
+
+        // chat-top 아래에 메시지를 추가 (맨 위에 고정)
         chatMessages.appendChild(messageElement);
+
+        // 스크롤 처리: 새 메시지가 추가되면 맨 아래로 스크롤
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
@@ -286,9 +292,11 @@
         })
             .then((data) => {
             if (data.length > 0) {
+                const chatTop = chatMessages.querySelector('.chat-top');
                 data.forEach(function (message) {
                     const messageElement = createMessageElement(message);
-                    chatMessages.prepend(messageElement);
+                    // 이전 메시지를 chat-top 아래에 추가
+                    chatMessages.insertBefore(messageElement, chatTop.nextSibling);
 
                     const messageDate = new Date(message.sendDate);
                     if (!oldestMessageDate || messageDate < new Date(oldestMessageDate)) {
@@ -316,12 +324,10 @@
                 sendMessage();
             }
         });
-
         messageInput.addEventListener('input', function() {
             sendButton.disabled = this.value.trim() === '';
         });
 
-        chatMessages.scrollTop = chatMessages.scrollHeight;
         chatMessages.addEventListener('scroll', function() {
             if (chatMessages.scrollTop === 0) {
                 loadPreviousMessages();
@@ -344,8 +350,6 @@
         setupEventListeners();
     });
 </script>
-
-
 
 <!-- chatRoom -->
 </body>
