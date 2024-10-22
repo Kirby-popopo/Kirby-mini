@@ -1,5 +1,6 @@
 package com.example.Mini1st.controller;
 
+import com.example.Mini1st.dao.follow.FollowDTO;
 import com.example.Mini1st.dao.login.UserDTO;
 import com.example.Mini1st.dao.profile.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -30,7 +33,7 @@ public class ProfileController {
              List<FollowDTO> findFollow = profileMapper.findFollowUser(id);
 
              // 팔로우 테이블 - 내가 팔로우 하고 있는 유저 가져오기
-             List<FollowingDTO> findFollowing = profileMapper.findFollowingUser(id);
+             List<FollowDTO> findFollowing = profileMapper.findFollowingUser(id);
 
              UserDTO loginUser = (UserDTO)session.getAttribute("loginMember");
              model.addAttribute("isFollow", false);
@@ -45,8 +48,10 @@ public class ProfileController {
              model.addAttribute("profile", findUser);
              model.addAttribute("posts", findUserPost);
              model.addAttribute("postsCount", findUserPost.size());
+
              model.addAttribute("follow", findFollow);
              model.addAttribute("followCount", findFollow.size());
+
              model.addAttribute("following", findFollowing);
              model.addAttribute("followingCount", findFollowing.size());
 
@@ -59,9 +64,6 @@ public class ProfileController {
 
     @GetMapping("/profile")
     public String show(Model model, HttpSession session) {
-        /***********************************************************
-                테스트 영역
-         **********************************************************/
 
         UserDTO loginUser = (UserDTO)session.getAttribute("loginMember");
 
@@ -74,9 +76,6 @@ public class ProfileController {
 
     @GetMapping("/profileEdit")
     public String showProfileEdit(Model model, HttpSession session) {
-        /***********************************************************
-         테스트 영역
-         **********************************************************/
 
         UserDTO loginUser = (UserDTO)session.getAttribute("loginMember");
 
@@ -85,6 +84,24 @@ public class ProfileController {
 
 
         return "profileEditPage";
+    }
+
+    @PostMapping("/profile/edit")
+    public String profileEdit(Model model, HttpSession session, String bio, String gender) {
+
+        UserDTO loginUser = (UserDTO)session.getAttribute("loginMember");
+        UserDTO updateUser = new UserDTO();
+
+        updateUser.setUser_id(loginUser.getUser_id());
+        updateUser.setGender("F");
+        if (gender.equals("male")){
+            updateUser.setGender("M");
+        }
+        updateUser.setDescription(bio);
+
+        profileMapper.updateUserProfile(updateUser);
+
+        return "redirect:/profile/" + loginUser.getUser_id();
     }
 
 }

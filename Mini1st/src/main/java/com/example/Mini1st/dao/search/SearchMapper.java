@@ -8,6 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface SearchMapper {
-    @Select("select user_id, name, nickname, profile_image from users where user_id like '%${userId}%'")
+    @Select("select user_id, name, nickname, profile_image from users where user_id like '${userId}%'")
     public List<SearchDTO> searchUserToUserId(String userId);
 }
