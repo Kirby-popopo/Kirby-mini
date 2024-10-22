@@ -17,7 +17,9 @@
 </head>
 <body>
 <!--<h1>Welcome, <span th:text="${User.name}">User</span></h1>-->
-
+    <!-- 전역 모달 컨테이너 추가 -->
+    <div id="modalContainer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+    </div>
     <!-- sidebar html 불러오기 -->
     <div id="sidebar-container"></div>
 
@@ -29,7 +31,9 @@
             })
             .catch(error => console.error('Error loading sidebar:', error));
     </script>
+
     <!-- sidebar html 불러오기 끝 -->
+
 <div class="container">
     <div class="main-content">
         <div class="post">
@@ -43,7 +47,8 @@
             <div class="post-actions">
                 <button>❤️</button>
                 <button>💬</button>
-                <button>🔖</button>
+                <button>🔗</button>
+                <button class="save-button">🔖</button>
             </div>
             <div class="post-likes">
                 뱀님 외 2명이 좋아합니다
@@ -62,33 +67,46 @@
                 </div>
                 <span class="more" id="show-comments" onclick="toggleComments()">댓글 모두 보기</span>
             </div>
-                <div class="comment-input">
-                    <input type="text" placeholder="댓글 달기...">
-                </div>
+            <div class="comment-input">
+                <input type="text" id="comment-input" placeholder="댓글 달기...">
+                <button id="add-comment" onclick="addComment()">게시</button>
             </div>
         </div>
+        </div>
     </div>
+    <script th:inline="javascript">
+
+    <!--댓글 추가 기능 구현 스크립트 시작-->
+    function addComment() {
+    var commentInput = document.getElementById('comment-input');
+    var commentText = commentInput.value.trim(); // 입력된 텍스트 가져오기
+
+    if (commentText !== "") {
+    var commentsContainer = document.getElementById('comments');
+    var newComment = document.createElement('p');
+    var userId = /*[[${userName}]]*/ 'defaultUser';
+    var usernameSpan = document.createElement('span');
+
+    usernameSpan.className = 'username';
+    usernameSpan.textContent = userId; // 사용자 이름을 실제 사용자 정보로 대체
+    newComment.appendChild(usernameSpan);
+
+    var commentContent = document.createTextNode(" " + commentText);
+    newComment.appendChild(commentContent);
+
+    commentsContainer.appendChild(newComment); // 댓글 추가
+    commentInput.value = ""; // 입력란 초기화
+    }
+    }
+    </script>
+    <!--댓글 추가 기능 구현 스크립트 끝-->
 
 <!-- 해당 부분부터 게시글 가져오는 부분 끝 -->
 
 <!-- 게시글 입력 하는 부분 -->
 
-<div id="createPostModal" class="modal">
-    <div class="modal-content">
-        <form method="post" action="/posts">
-            <h2>새 게시물 만들기</h2>
-            <button type="button" id="backButton" onclick="goBack()" style="display: none;">←</button>
-            <div class="post-image">
-                <img id="selectedImagePreview" src="" alt="선택한 이미지" style="display: none;">
-            </div>
-            <input type="file" id="fileInput" onchange="convertToBase64(event)">
-            <input type="hidden" id="base64Image" name="base64Image">
-            <textarea name="content_box" maxlength="2200" placeholder="게시글 내용을 입력하세요"></textarea>
-            <input type="submit" value="공유하기">
-            <a herf="/mainPage">취소</a>
-        </form>
-    </div>
-</div>
+
+
 <!-- 게시글 입력 하는 부분 끝 -->
 <!--게시글 입력 후 리다이렉트 + 팝업창 띄우기 (작성한 게시글 미리보기)-->
 

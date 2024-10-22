@@ -1,10 +1,13 @@
 package com.example.Mini1st.controller;
 import com.example.Mini1st.dao.PostDTO;
+import com.example.Mini1st.dao.login.UserDTO;
 import com.example.Mini1st.dao.mapper.PostMapper;
+import jakarta.servlet.http.HttpSession;
 import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +25,8 @@ public class PostController {
 
     @PostMapping("/posts")
     public String createPost(@RequestParam("base64Image") String base64Image,
-                             @RequestParam("content_box") String contentBox) {
+                             @RequestParam("content_box") String contentBox, Model model,
+                             HttpSession session) { // setuserId 를 검사하기위해 세션사용
         try {
             // Base64 문자열에서 메타데이터 제거 (예: "data:image/jpeg;base64," 제거)
             String[] parts = base64Image.split(",");
@@ -44,10 +48,12 @@ public class PostController {
             System.out.println("이미지 파일이 성공적으로 저장되었습니다: " + filePath);
             System.out.println("게시글 내용: " + contentBox);
             PostDTO insetData = new PostDTO();
-            insetData.setUserId("1234");
+            UserDTO findUser = (UserDTO)session.getAttribute("loginMember");
+            insetData.setUserId(findUser.getUser_id());
             insetData.setContents(contentBox);
             insetData.setImage_link(filePath);
 
+            model.addAttribute("post",insetData);
             try {
                 postDAO.insertPost(insetData);
             } catch (Exception e) {
