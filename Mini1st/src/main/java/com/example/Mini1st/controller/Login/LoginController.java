@@ -61,7 +61,7 @@ return null;
         if (session != null) {
             session.invalidate(); // 세션 무효화
         }
-        return "redirect:/login"; // 로그아웃 후 로그인 페이지로 리다이렉트
+        return "redirect:/templates/login"; // 로그아웃 후 로그인 페이지로 리다이렉트
     }
 
     // 홈 화면 요청
