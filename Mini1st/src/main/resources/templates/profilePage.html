@@ -100,6 +100,9 @@
             cursor: pointer;
         }
     </style>
+    <!-- postDetail css -->
+    <!--<link rel="stylesheet" href="/postDetail/postDetail.css">-->
+
 </head>
 <body>
 <!-- sidebar html 불러오기 -->
@@ -130,6 +133,19 @@
 <script src="/sidebar/menu.js" type="text/javascript"></script>
 <!-- 검색, 알림 기능 사이드바 끝-->
     <div class="container">
+<!--         post-detail html 불러오기
+        <div id="post-detail"></div>
+
+        <script>
+            fetch('/postDetail/postDetail.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('post-detail').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading sidebar:', error));
+        </script>
+         post-detail html 불러오기 끝-->
+
         <header class="profile-header">
             <img src="/placeholder.svg?height=150&width=150" alt="프로필 사진" class="profile-picture">
             <div class="profile-info">
@@ -305,14 +321,14 @@
 
             function loadFollowingModalContent() {
                let xhr = new XMLHttpRequest();
-            
+
                xhr.onload = function() {
                    // 서버에서 받아온 HTML을 모달에 넣기
                    document.getElementById("FollowingModalContent").innerHTML = xhr.responseText;
                    // 모달 열기
                    openFollowingModal();
                };
-            
+
                xhr.open("GET", "/getFollowingModalContent", true); // 서버에서 모달의 내용을 가져올 경로
                xhr.send();
             }

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram 게시물 작성</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .modal {
+        display: flex;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        background-color: #fff;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 500px;
+        overflow: hidden;
+    }
+    .modal-header {
+        padding: 10px 16px;
+        border-bottom: 1px solid #dbdbdb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .modal-header h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .upload-area, .second-step {
+        padding: 24px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+    }
+    .upload-icon {
+        font-size: 50px;
+        color: #262626;
+        margin-bottom: 16px;
+    }
+    .image-preview {
+        max-width: 100%;
+        max-height: 300px;
+        margin-bottom: 20px;
+    }
+    .btn {
+        padding: 6px 16px;
+        background-color: #0095f6;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    #backButton, #closeButton {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    textarea {
+        width: calc(100% - 32px);
+        height: 100px;
+        padding: 10px;
+        border: 1px solid #dbdbdb;
+        resize: none;
+        margin: 16px;
+    }
+    .submit-area {
+        padding: 10px 16px;
+        text-align: right;
+        border-top: 1px solid #dbdbdb;
+    }
+  </style>
+</head>
+<body>
+
+<div id="createPostModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button id="backButton" onclick="resetModal()" style="display: none;">←</button>
+      <h2 id="modalTitle">새 게시물 만들기</h2>
+      <button id="closeButton" onclick="closeModal()">✕</button>
+    </div>
+
+    <form id="postForm" onsubmit="submitPost(event)">
+      <div id="uploadArea" class="upload-area">
+        <div class="upload-icon">📷</div>
+        <p>사진과 동영상을 여기에 끌어다 놓으세요</p>
+        <input type="file" id="fileInput" onchange="previewImage(event)" style="display: none;" accept="image/*">
+        <button type="button" onclick="document.getElementById('fileInput').click()" class="btn">
+          컴퓨터에서 선택
+        </button>
+      </div>
+
+      <div id="contentArea" style="display: none;">
+        <img id="imagePreview" class="image-preview" src="" alt="선택한 이미지">
+        <textarea id="postContent" name="content" maxlength="2200" placeholder="게시글 내용을 입력하세요"></textarea>
+      </div>
+
+      <div class="submit-area" id="firstSubmitArea">
+        <button type="submit" id="submitButton" class="btn" disabled>다음</button>
+      </div>
+
+      <!-- 두 번째 모달 단계 -->
+      <div id="secondStep" class="second-step" style="display: none;">
+        <h3>게시물을 확인하고 공유하세요</h3>
+        <img id="secondImagePreview" class="image-preview" src="" alt="선택한 이미지">
+        <textarea id="finalContent" placeholder="게시글 내용을 수정하거나 사람을 태그하세요"></textarea>
+        <button type="button" class="btn" onclick="finalSubmit()">공유하기</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+      document.getElementById('createPostModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+      document.getElementById('createPostModal').style.display = 'none';
+      resetModal();
+  }
+
+  function previewImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              document.getElementById('imagePreview').src = e.target.result;
+              document.getElementById('uploadArea').style.display = 'none';
+              document.getElementById('contentArea').style.display = 'block';
+              document.getElementById('backButton').style.display = 'inline';
+              document.getElementById('submitButton').disabled = false;
+          }
+          reader.readAsDataURL(file);
+      }
+  }
+
+  function goBack() {
+      document.getElementById('secondStep').style.display = 'none';
+      document.getElementById('contentArea').style.display = 'block';
+      document.getElementById('uploadArea').style.display = 'none';
+      document.getElementById('backButton').style.display = 'inline';
+      document.getElementById('submitButton').disabled = false;
+      document.getElementById('modalTitle').textContent = '새 게시물 만들기';
+  }
+
+  function submitPost(event) {
+      event.preventDefault();
+      // 첫 번째 단계에서 두 번째 단계로 전환
+      document.getElementById('uploadArea').style.display = 'none';
+      document.getElementById('contentArea').style.display = 'none';
+      document.getElementById('secondStep').style.display = 'flex';
+      document.getElementById('submitButton').style.display = 'none';
+      document.getElementById('modalTitle').textContent = '게시물 확인';
+
+      // 이미지와 내용을 두 번째 모달로 복사
+      const imageSrc = document.getElementById('imagePreview').src;
+      document.getElementById('secondImagePreview').src = imageSrc;
+      document.getElementById('finalContent').value = document.getElementById('postContent').value;
+  }
+
+function finalSubmit() {
+    const imageFile = document.getElementById('fileInput').files[0];
+
+    if (imageFile) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const content = document.getElementById('finalContent').value;
+            const base64String = reader.result.split(',')[1];
+
+            const formData = new FormData();
+            formData.append("content", content);
+            formData.append("image", base64String);
+
+            // 서버에 데이터 전송
+            fetch('/posts/create', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    // 게시물 저장 후 메인 페이지로 이동
+                    closeModal();
+                    location.href = "/profile";
+                } else {
+                    alert("게시물 업로드에 실패했습니다.");
+                }
+            }).catch(error => {
+                console.error("Error:", error);
+                alert("오류가 발생했습니다.");
+            });
+        };
+
+        // reader.onloadend 이벤트 리스너가 설정된 후에 호출해야 함
+        reader.readAsDataURL(imageFile);
+    } else {
+        alert("파일을 선택해주세요.");
+    }
+}
+  function resetModal() {
+      // 모달 초기 상태로 리셋
+        console.log("초기화");
+      document.getElementById('uploadArea').style.display = 'flex';
+      document.getElementById('contentArea').style.display = 'none';
+      document.getElementById('secondStep').style.display = 'none';
+      document.getElementById('backButton').style.display = 'none';
+      document.getElementById('submitButton').style.display = 'block';
+      document.getElementById('submitButton').disabled = true;
+      document.getElementById('fileInput').value = '';
+      document.getElementById('imagePreview').src = '';
+      document.getElementById('modalTitle').textContent = '새 게시물 만들기';
+  }
+
+    // 다른 파일에서 '만들기' 버튼 클릭 시 모달 열기 (글로벌 이벤트 리스너 추가)
+    document.addEventListener('DOMContentLoaded', function() {
+        const createPostButton = document.getElementById('createPost');
+        if (createPostButton) {
+            createPostButton.addEventListener('click', openModal);
+        }
+    });
+
+  // 페이지 로드 시 모달 열기 (테스트용)
+   window.onload = openModal;
+</script>
+
+</body>
+</html>
