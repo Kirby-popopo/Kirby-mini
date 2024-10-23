@@ -198,11 +198,10 @@
     </style>
 </head>
 <body>
-
 <div class="app-container">
     <div class="sidebar">
         <ul id="roomList" class="message-list"></ul>
-<!--        <button id="createRoomBtn">채팅방 생성</button>-->
+        <button id="createRoomBtn">채팅방 생성</button>
     </div>
     <div class="main-content" id="mainContent">
         <div class="default-message" id="defaultMessage">
@@ -333,16 +332,16 @@
         }
 
 
-        // 채팅방 생성 함수 /*recipient 해당 이름으로 채팅방 이름 받아온다*/
-        function createRoom(recipient) {
+        // 채팅방 생성 함수
+        function createRoom() {
             const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
-            if (recipient && recipient.trim() !== "") {
+            if (roomName && roomName.trim() !== "") {
                 fetch('/roomAdd', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: 'room_name=' + encodeURIComponent(recipient)
+                    body: 'room_name=' + encodeURIComponent(roomName)
                 }).then(response => {
                     if (response.ok) {
                         loadChatRooms();
@@ -358,23 +357,22 @@
         // DOM이 로드된 후 이벤트 리스너와 필요한 요소를 설정
         loadChatRooms(); // 채팅방 리스트 불러오기
 
-        /*// 채팅방 생성 버튼에 이벤트 리스너 추가
+        // 채팅방 생성 버튼에 이벤트 리스너 추가
         const createRoomBtn = document.getElementById('createRoomBtn');
         if (createRoomBtn) {
             createRoomBtn.addEventListener('click', createRoom);
         } else {
             console.error("채팅방 생성 버튼을 찾을 수 없습니다.");
-        }*/
+        }
 
-        /*// 새 메시지 버튼 클릭 시 이벤트 리스너 추가
-        const newMessageBtn = document.getElementById('newMessageBtn');
-        if (newMessageBtn) {
-            newMessageBtn.addEventListener('click', function() {
-                alert('새 메시지 모달을 여는 로직을 추가하세요.');
-            });
-        } else {
-            console.error('새 메시지 버튼을 찾을 수 없습니다.');
-        }*/
+//        // 새 메시지 버튼 클릭 시 이벤트 리스너 추가
+//        if (newMessageBtn) {
+//            newMessageBtn.addEventListener('click', function() {
+//                alert('새 메시지 모달을 여는 로직을 추가하세요.');
+//            });
+//        } else {
+//            console.error('새 메시지 버튼을 찾을 수 없습니다.');
+//        }
 
         console.log(document.getElementById('defaultMessage'));
     });
