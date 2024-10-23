@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,15 +7,10 @@
     <link rel="stylesheet" href="/login/login.css">
     <style>
         .error-message {
-            display: none;
+            display: block;
             color: red;
             margin-top: 10px;
             transition: opacity 0.5s ease-in-out;
-        }
-
-        .error-message.show {
-            display: block;
-            opacity: 1;
         }
     </style>
 </head>
@@ -32,10 +27,10 @@
                 <input type="password" name="userPw" placeholder="비밀번호" required>
                 <button type="submit">로그인</button>
             </form>
-
             <div id="errorMessage" class="error-message">
-                잘못된 비밀번호입니다. 다시 확인하세요.
+                <span th:text="${error}">test</span>
             </div>
+
 
             <div class="divider">또는</div>
             <div class="facebook-login">
