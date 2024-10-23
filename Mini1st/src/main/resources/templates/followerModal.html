@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인스타그램 팔로워 모달</title>
+
+</head>
+<body>
+<div th:fragment="modal-contents" class="modal-contents">
+    <div class="modal-header">
+        <h2 class="modal-title">팔로워</h2>
+        <button class="close-button" onclick="closeFollowerModal()">&times;</button>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" class="search-input" id="search-input" placeholder="검색" oninput="inputTextFollowInputEvent()">
+    </div>
+
+    <ul class="follower-list" id="follower-list">
+
+    </ul>
+
+</div>
+</body>
+</html>

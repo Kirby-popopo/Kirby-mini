@@ -100,7 +100,7 @@
 <div id="createPostModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
-      <button id="backButton" onclick="goBack()" style="display: none;">←</button>
+      <button id="backButton" onclick="resetModal()" style="display: none;">←</button>
       <h2 id="modalTitle">새 게시물 만들기</h2>
       <button id="closeButton" onclick="closeModal()">✕</button>
     </div>
@@ -184,27 +184,46 @@
       document.getElementById('finalContent').value = document.getElementById('postContent').value;
   }
 
-  function finalSubmit() {
-      // 전송 방식(form) 을 직접 생성하여 전송
-      const form = document.createElement('form');
-      form.setAttribute('method', 'post');
-      form.setAttribute('action', '/posts');
+function finalSubmit() {
+    const imageFile = document.getElementById('fileInput').files[0];
 
-      let contents_data = document.getElementById('contentArea');
-      const data1 = document.createElement('input');// 태그를 생성
-      data1.setAttribute('name', 'content_box');
-      data1.setAttribute('value', contents_data.value);
+    if (imageFile) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const content = document.getElementById('finalContent').value;
+            const base64String = reader.result.split(',')[1];
 
-      const data2 = document.createElement('input');// 태그를 생성
-      data2.setAttribute('name', 'base64Image');
-      data2.setAttribute('value', contents_data.value);
+            const formData = new FormData();
+            formData.append("content", content);
+            formData.append("image", base64String);
 
-      form.submit();
+            // 서버에 데이터 전송
+            fetch('/posts/create', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    // 게시물 저장 후 메인 페이지로 이동
+                    closeModal();
+                    location.href = "/profile";
+                } else {
+                    alert("게시물 업로드에 실패했습니다.");
+                }
+            }).catch(error => {
+                console.error("Error:", error);
+                alert("오류가 발생했습니다.");
+            });
+        };
 
-  }
-
+        // reader.onloadend 이벤트 리스너가 설정된 후에 호출해야 함
+        reader.readAsDataURL(imageFile);
+    } else {
+        alert("파일을 선택해주세요.");
+    }
+}
   function resetModal() {
       // 모달 초기 상태로 리셋
+        console.log("초기화");
       document.getElementById('uploadArea').style.display = 'flex';
       document.getElementById('contentArea').style.display = 'none';
       document.getElementById('secondStep').style.display = 'none';

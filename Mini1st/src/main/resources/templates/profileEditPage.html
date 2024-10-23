@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -161,12 +161,12 @@
     <div class="profile-item">
         <img src="/placeholder.svg?height=40&width=40" alt="프로필 이미지">
         <div>
-            <div class="username">mysk423</div>
-            <div>문태성</div>
+            <div class="username" th:text="${loginMember?.user_id?:_}">mysk423</div>
+            <div th:text="${loginMember?.name?:_}">문태성</div>
         </div>
         <button class="change-button">사진 변경</button>
     </div>
-    <form>
+    <form action="/profile/edit" method="post">
         <div class="form-group">
             <label for="website">웹사이트</label>
             <input type="text" id="website" name="website" placeholder="웹사이트" disabled>

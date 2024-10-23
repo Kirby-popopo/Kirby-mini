@@ -19,4 +19,5 @@ public class UserDTO {
     private String nickname;
     private String phone_Number;
     private LocalDateTime last_Login;
+    private String description;
 }
