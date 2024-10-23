@@ -51,7 +51,7 @@ public class LoginController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-return null;
+    return null;
     }
 
     // 로그아웃 요청 처리
@@ -64,7 +64,7 @@ return null;
         return "redirect:/templates/login"; // 로그아웃 후 로그인 페이지로 리다이렉트
     }
 
-    // 홈 화면 요청
+    /*// 홈 화면 요청
     // 수정 : 임시 매핑명 지정
     @PostMapping("/test")
     public String main(HttpServletRequest request, Model model) {
@@ -77,5 +77,5 @@ return null;
         UserDTO loginMember = (UserDTO) session.getAttribute("loginMember");
         model.addAttribute("user", loginMember);
         return "mainPage"; // mainPage.html 뷰 반환
-    }
+    }*/
 }
