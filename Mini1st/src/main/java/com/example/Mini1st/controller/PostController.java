@@ -6,10 +6,12 @@ import com.example.Mini1st.dao.mapper.PostMapper;
 import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Profiles;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
@@ -23,10 +25,12 @@ public class PostController {
     @Autowired
     PostMapper postDAO;
 
-    @PostMapping("/posts")
-    public String createPost(@RequestParam("base64Image") String base64Image,
-                             @RequestParam("content_box") String contentBox, Model model,
+    @PostMapping("/posts/create")
+    public ResponseEntity<?> createPost(@RequestParam("image") String base64Image,
+                             @RequestParam("content") String contentBox,
+                             Model model,
                              HttpSession session) { // setuserId 를 검사하기위해 세션사용
+        System.out.println("호출");
         try {
             // Base64 문자열에서 메타데이터 제거 (예: "data:image/jpeg;base64," 제거)
             String[] parts = base64Image.split(",");
@@ -63,10 +67,10 @@ public class PostController {
             //리다이렉트로 게시물 저장되었을때 main-> post_list (무한스크롤)-> postModal상세페이지 로 이동
             // 리다이렉트로 프로파일 > 게시물 리스트 > 올린 게시물 팝업창 이동
             /*List<PostDTO> getAllPosts */
-            return "redirect:/profile";
+            return ResponseEntity.ok().build();
         } catch (IOException e) {
             e.printStackTrace();
-            return "이미지 업로드 중 오류가 발생했습니다.";
+            return ResponseEntity.badRequest().build();
         }
     }
     }
