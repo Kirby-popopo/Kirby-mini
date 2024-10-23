@@ -147,7 +147,7 @@
          post-detail html 불러오기 끝-->
 
         <header class="profile-header">
-            <img src="/placeholder.svg?height=150&width=150" alt="프로필 사진" class="profile-picture">
+            <img th:src="${profile.profile_image}" alt="프로필 사진" class="profile-picture">
             <div class="profile-info">
                 <h1 class="profile-username" th:text="${profile?.user_id?:_}">mysk423</h1>
                 <div class="profile-actions">

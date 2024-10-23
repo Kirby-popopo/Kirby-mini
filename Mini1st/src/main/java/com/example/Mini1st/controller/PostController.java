@@ -40,8 +40,9 @@ public class PostController {
             byte[] imageBytes = Base64.getDecoder().decode(imageString);
 
             // 저장할 경로 설정 - 프로젝트 디렉터리의 static/images 폴더
-            String directory = new File("/images").getAbsolutePath();
-            String filePath = directory + "/uploaded_image_" + System.currentTimeMillis() + ".png";
+            String directory = new File("C:\\MiniProject\\Kirby-mini\\Mini1st\\src\\main\\resources\\static\\images").getAbsolutePath();
+            String name = System.currentTimeMillis() + ".png";
+            String filePath = directory + "/" + name;
 
             // 이미지 파일 저장
             File imageFile = new File(filePath);
@@ -55,7 +56,7 @@ public class PostController {
             UserDTO findUser = (UserDTO)session.getAttribute("loginMember");
             insetData.setUserId(findUser.getUser_id());
             insetData.setContents(contentBox);
-            insetData.setImage_link(filePath);
+            insetData.setImage_link("/images/"+name);
 
             model.addAttribute("post",insetData);
             try {
