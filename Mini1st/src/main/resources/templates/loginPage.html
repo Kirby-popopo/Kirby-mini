@@ -17,11 +17,11 @@
 <body>
 <div class="container">
     <div class="app-preview">
-        <img src="https://www.instagram.com/static/images/homepage/screenshots/screenshot1.png/fdfe239b7c9f.png" alt="Instagram app preview" width="380" height="581">
+        <img id="loginImg" src="/login/img/login.png" alt="Instagram app preview" width="380" height="581">
     </div>
     <div class="login-container">
         <div class="form-container">
-            <img src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png" alt="Instagram" class="logo" width="175" height="51">
+            <img src="/login/img/1.jpg" alt="k-stargram" class="logo" width="200" height="51">
             <form id="loginForm" action="/login/authenticate" method="post">
                 <input type="text" name="userId" placeholder="전화번호, 사용자 이름 또는 이메일" required>
                 <input type="password" name="userPw" placeholder="비밀번호" required>
@@ -30,7 +30,6 @@
             <div id="errorMessage" class="error-message">
                 <span th:text="${error}">test</span>
             </div>
-
 
             <div class="divider">또는</div>
             <div class="facebook-login">
@@ -49,6 +48,28 @@
     document.getElementById('loginForm').addEventListener('submit', function(e) {
         const errorMessage = document.getElementById('errorMessage');
     });
+
+    const images = [
+    '/login/img/login.png',
+    '/login/img/login1.png',
+    '/login/img/login2.png'
+    ];
+
+    let currentIndex = 0; // 인덱스 초기화
+
+    function changeImage() {
+        // 이미지 요소를 선택
+        const imageElement = document.getElementById('loginImg');
+
+        // 다음 이미지로 인덱스 증가 (이미지 배열의 길이만큼 반복)
+        currentIndex = (currentIndex + 1) % images.length;
+
+        // 이미지 요소의 src 속성 변경
+        imageElement.src = images[currentIndex];
+    }
+
+    // 3초마다 changeImage 함수 실행
+    setInterval(changeImage, 3000);
 </script>
 </body>
 </html>
