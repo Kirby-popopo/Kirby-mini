@@ -307,16 +307,44 @@
             chatBtn.disabled = true;
         }
 
-        recipientInput.addEventListener('input', function() {
-            const query = this.value.trim();
-            if (query.length > 0) {
-                searchResult.textContent = '계정을 찾을 수 없습니다.';
-                chatBtn.disabled = true;
-            } else {
-                searchResult.textContent = '';
-                chatBtn.disabled = true;
-            }
-        });
+
+
+        recipientInput.addEventListener('input', searchInputUser);
+
+        // 아이디 입력시 해당 유저 검색
+           function searchInputUser(e) {
+       		let xhr = new XMLHttpRequest();
+       		let userId = e.target.value;
+
+       		xhr.onload = function() {
+       			if (xhr.status == 200) {
+
+                    searchResult.innerHTML = "";
+
+                    if (xhr.responseText.length == 0){
+                        searchResult.textContent = '계정을 찾을 수 없습니다.';
+                        chatBtn.disabled = true;
+
+                        return;
+                    }
+
+       			    let users = JSON.parse(xhr.responseText);
+
+                    searchResult.innerHTML = "";
+                        users.forEach(user => {
+                            searchResult.innerHTML += `<a href="/profile/${user.user_id}">
+                                                            <div class="menu-search-item">
+                                                                <img src="/placeholder.svg?height=30&width=30" alt="User">
+                                                                <span>${user.name}</span>
+                                                            </div>
+                                                         </a>`;
+                        });
+       			    }
+       		};
+       		xhr.open('POST', '/SearchUser', true);
+       		xhr.setRequestHeader('Content-Type', 'application/json');
+       		xhr.send(JSON.stringify({ userId: userId }));
+       	}
 
         chatBtn.addEventListener('click', function() {
             const recipient = recipientInput.value.trim();
