@@ -307,11 +307,9 @@
             chatBtn.disabled = true;
         }
 
-
-
-        recipientInput.addEventListener('input', searchInputUser);
-
         // 아이디 입력시 해당 유저 검색
+           recipientInput.addEventListener('input', searchInputUser);
+
            function searchInputUser(e) {
        		let xhr = new XMLHttpRequest();
        		let userId = e.target.value;
@@ -332,13 +330,22 @@
 
                     searchResult.innerHTML = "";
                         users.forEach(user => {
-                            searchResult.innerHTML += `<a href="/profile/${user.user_id}">
-                                                            <div class="menu-search-item">
-                                                                <img src="/placeholder.svg?height=30&width=30" alt="User">
-                                                                <span>${user.name}</span>
-                                                            </div>
-                                                         </a>`;
+                            let userDiv = document.createElement('div');
+                            userDiv.classList.add('menu-search-item');
+                            userDiv.innerHTML = `
+                                <img src="/placeholder.svg?height=30&width=30" alt="User">
+                                <span>${user.name}</span>`;
+                        
+                            // 클릭 이벤트 리스너 추가
+                            userDiv.addEventListener('click', function() {
+                                recipientInput.value = user.name;
+                                createRoomName(user.user_id);
+                            });
+                        
+                            searchResult.appendChild(userDiv);
                         });
+                        
+                        chatBtn.disabled = false;
        			    }
        		};
        		xhr.open('POST', '/SearchUser', true);
@@ -346,13 +353,34 @@
        		xhr.send(JSON.stringify({ userId: userId }));
        	}
 
+       	// 채팅 버튼 클릭시 해당 유저의 이름으로 채팅방 생성.(일단 1:1 만 구현)
         chatBtn.addEventListener('click', function() {
-            const recipient = recipientInput.value.trim();
-            if (recipient) {
-                createRoom(recipient);
+            let selectedUser = recipientInput.value.trim();
+
+            if (selectedUser) {
+                createRoom(selectedUser);
                 closeModal();
+            } else {
+                alert('유효한 유저를 선택해주세요.');
             }
         });
+
+        // 채팅방 생성 함수
+        function createRoom(userId) {
+                fetch('/roomAdd', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'room_name=' + encodeURIComponent(userId)
+                }).then(response => {
+                    if (response.ok) {
+                        loadChatRooms();
+                    } else {
+                        alert('채팅방 생성에 실패했습니다.');
+                    }
+                });
+        }
 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && modal.style.display === 'flex') {
@@ -397,29 +425,6 @@
                 chatRoomFrame.src = `/chatRoom/${roomId}`;
             } else {
                 console.error('Chat room frame not found.');
-            }
-        }
-
-
-        // 채팅방 생성 함수
-        function createRoom() {
-            const roomName = prompt("새로운 채팅방 이름을 입력하세요:");
-            if (roomName && roomName.trim() !== "") {
-                fetch('/roomAdd', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'room_name=' + encodeURIComponent(roomName)
-                }).then(response => {
-                    if (response.ok) {
-                        loadChatRooms();
-                    } else {
-                        alert('채팅방 생성에 실패했습니다.');
-                    }
-                });
-            } else {
-                alert("채팅방 이름은 필수 입력입니다.");
             }
         }
 
