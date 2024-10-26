@@ -92,6 +92,7 @@
         padding: 10px 16px;
         text-align: right;
         border-top: 1px solid #dbdbdb;
+        margin-left: 0; /* 오른쪽 마진을 없애기 */
     }
   </style>
 </head>
@@ -160,15 +161,6 @@
       }
   }
 
-  function goBack() {
-      document.getElementById('secondStep').style.display = 'none';
-      document.getElementById('contentArea').style.display = 'block';
-      document.getElementById('uploadArea').style.display = 'none';
-      document.getElementById('backButton').style.display = 'inline';
-      document.getElementById('submitButton').disabled = false;
-      document.getElementById('modalTitle').textContent = '새 게시물 만들기';
-  }
-
   function submitPost(event) {
       event.preventDefault();
       // 첫 번째 단계에서 두 번째 단계로 전환
@@ -223,7 +215,6 @@ function finalSubmit() {
 }
   function resetModal() {
       // 모달 초기 상태로 리셋
-        console.log("초기화");
       document.getElementById('uploadArea').style.display = 'flex';
       document.getElementById('contentArea').style.display = 'none';
       document.getElementById('secondStep').style.display = 'none';
