@@ -1,7 +1,14 @@
 .container {
-    max-width: 935px;
-    margin: 0 auto;
+    max-width: 935px; /* 컨테이너 최대 너비 설정 */
+    margin: 0 auto; /* 가로 방향으로 중앙 정렬 */
     padding: 30px 20px;
+    box-sizing: border-box;
+    flex-grow: 1; /* 남은 공간을 균등하게 차지 */
+
+    display: flex; /* Flexbox 사용 */
+    flex-direction: column;
+    align-items: center; /* 가로 방향 가운데 정렬 */
+    justify-content: center; /* 세로 방향 가운데 정렬 */
 }
 .profile-header {
             display: flex;

@@ -1,13 +1,13 @@
 .sidebar {
-    width: 220px;
     background-color: #000;
     color: #fff;
     height: 100vh;
-    padding: 20px;
     position: fixed;
     left: 0;
     top: 0;
     overflow-y: auto;
+    width: 200px;
+    z-index: 500; /* 사이드바의 z-index 설정 */
 }
 
 .sidebar-item {

@@ -15,9 +15,3 @@ color: white;
 a:visited{
 color: inherit;
 }
-
-.main-content {
-margin-left: 220px;
-padding: 20px;
-width: calc(100% - 220px);
-}

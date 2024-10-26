@@ -137,12 +137,12 @@ a:visited{
 .app-container {
     display: flex;
     height: 100%;
+    left-margin: 200px;
 }
 
 .main-content {
     flex-grow: 1;
     background-color: #000;
-    padding-left: 150px;
     color: #fff;
     display: flex;
 }
